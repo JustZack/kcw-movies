@@ -1,0 +1,363 @@
+#content div.kcw-movies-container {
+    min-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.kcw-movies-video {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+}
+
+div.kcw-movies-video iframe {
+    width: 100%;
+    height: 75vh;
+}
+
+div.kcw-movies-pagination-wrapper {
+    width: 100%;
+    margin: 5px 0px;
+}
+
+input.kcw-movies-link {
+    border-radius: 4px 0px 0px 4px;
+    padding: 5px 5px;
+    margin: 0px;
+    height: 30px;
+    width: auto;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    color: #606060;
+    font-size: 20px;
+    line-height: 30px;
+    position: absolute;
+    left: 0;
+    z-index: 5;
+    opacity: 0;
+    text-overflow: ellipsis;
+}
+input.kcw-movies-link:hover {
+    cursor: pointer;
+}
+
+a.kcw-movies-copy-embed {
+    display: flex;
+    float: right;
+    width: 105px;
+    cursor: pointer;
+    padding: 1px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+    background-color: #fff;
+}
+a.kcw-movies-copy-embed:hover {
+    border-color: #606060;
+    background-color: #e5e5e5;
+}
+
+a.kcw-movies-copy-embed h4 {
+    display: inline;
+    font-size: 20px;
+    font-weight: 500;
+    color: #030303;
+    display: inline-block;
+    width: 75%;
+    padding-left: 7px;
+    z-index: 999;
+    margin: 0;
+}
+a.kcw-movies-copy-embed span {
+    display: inline-block;
+    height: 30px;
+    padding: 2.5px 0px 6px 0px;
+    width: 25%;
+    z-index: 999;
+}
+a.kcw-movies-copy-embed span::before {
+    font-size: 25px;
+}
+
+a.kcw-movies-copy-embed input.kcw-movies-copy-embed-link {
+    position: absolute;
+    left: -99999px;
+}
+div.kcw-movies-copy-embed-message {
+    opacity: 0;
+    position: absolute;
+    left: -99999px;
+    color: #030303;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 0px 4px;
+}
+div.kcw-movies-copy-embed-message:after{
+    content:'';
+    position: absolute;
+    top: 100%;
+    left: 65%;
+    margin-left: -25px;
+    width: 0;
+    height: 0;
+    border-top: solid 10px #ccc;
+    border-left: solid 10px transparent;
+    border-right: solid 10px transparent;
+}
+h3.kcw-movies-video-title {
+    color: #030303;
+    display: block;
+    font-size: 30px;
+}
+p.kcw-movies-video-views, p.kcw-movies-video-created, p.kcw-movies-video-separator {
+    margin: 0px;
+    display: inline-block;
+    text-align: right;
+    color: #030303;
+    font-size: 17px;
+}
+
+div.kcw-movies-video-info {
+    display: block;
+    margin: 0;
+}
+
+ul.kcw-movies-pagination {
+    text-align: right;
+}
+ul.kcw-movies-pagination li {
+    display: inline-block;
+    margin-left: 10px;
+    cursor: pointer;
+}
+ul.kcw-movies-pagination li a {
+    text-decoration: none;
+    padding: 0px 5px;
+    border: 1px solid #efefef;
+    background-color: transparent;
+    color: #636363;
+    font-size: 20px;
+    line-height: 24px;
+}
+ul.kcw-movies-pagination li a.current_page, ul.kcw-movies-pagination li a:hover {
+    background-color: rgba(229, 229, 229, .8);
+    border-color: #ccc;
+    color: #030303;
+}
+
+ul.kcw-movies-list {
+    width: 100%;
+    border: 1px solid #ccc;
+    background-color: transparent;
+    border-radius: 5px;
+    padding: 12.5px 12.5px;
+    
+}
+
+ul.kcw-movies-list li {
+    list-style-type: none;
+    display: inline-block;
+    width: 200px;
+    margin: 1px 2px 1px 2px;
+}
+
+ul.kcw-movies-list li img {
+    border-radius: 5px;
+    width: 200px;
+    height: 137.5px;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+a.kcw-movies-thumb-wrapper {
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 0;
+}
+
+p.kcw-movies-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    color: #030303;
+    font-size: 16px;
+    text-indent: 5px;
+}
+
+div.kcw-movies-search{
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #FFFFFF;
+    font-size: 16px;
+    padding: 0px;
+}
+div.kcw-movies-search input {
+    box-sizing: border-box;
+    padding: 2px 0px 4px 12px;
+    margin: 0px;
+    border: none;
+    width: 90%;
+    height: 100%;
+    color: #030303;
+    float: left;
+    background-color: #fff;
+    border-radius: 5px 0px 0px 5px;
+    border-width: 0px 0px 0px 0px;
+}
+div.kcw-movies-search input:hover {
+    border-right: 1px solid #606060;
+}
+
+div.kcw-movies-search span {
+    width: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    padding: 2px 0px 6px 0px;
+}
+div.kcw-movies-search span:hover {
+    cursor: pointer;
+}
+
+div.kcw-movies-search:hover {
+    background-color: #e5e5e5;
+    border-color: #606060;
+    cursor: text;
+}
+/*div.kcw-movies-search input:hover {
+    border-right: 1px solid #606060;
+}*/
+
+h3.kcw-movies-list-message {
+    display: none;
+}
+
+div.kcw-movies-playbutton {
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 65px;
+    width: 106px;
+    background-color: rgba(0, 0, 0, .65);
+    position: absolute;
+    top: -9999px;
+    left: -999px;
+    border-radius: 5px;
+}
+div.kcw-movies-triangle {
+    margin-top: 14.5px;
+    margin-left: 40px;
+    --side-size: 17px;
+    border-top: var(--side-size) solid transparent;
+    border-bottom: var(--side-size) solid transparent;
+    border-left: calc(2 * var(--side-size) * 0.866) solid #ffffff;
+    border-right: var(--side-size) solid transparent;
+    display: inline-block;
+}
+
+div.kcw-movies-length {
+    position: relative;
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+div.kcw-movies-length pre {
+    position: absolute;
+    background-color: rgba(0, 0, 0, .75);
+    bottom: 32px;
+    padding: 0px 2px;
+    right: 6px;
+    font-size: 15px;
+    line-height: 18px;
+    color: white;
+    border-radius: 2.5px;
+}
+
+@media only screen and (max-aspect-ratio: 4/3) {
+    div.kcw-movies-video iframe {
+        width: 100%;
+        height: 60vh;
+    }
+}
+@media only screen and (max-aspect-ratio: 1/1) {
+    div.kcw-movies-video iframe {
+        width: 100%;
+        height: 40vh;
+    }
+}
+@media only screen and (max-aspect-ratio: 3/4) {
+    div.kcw-movies-video iframe {
+        width: 100%;
+        height: 30vh;
+    }
+}
+
+@media only screen and (max-width: 1300px) {
+}
+
+@media only screen and (max-width: 900px) {
+    ul.kcw-movies-list li, ul.kcw-movies-list li img {
+        width: 125px;
+        height: 112.5px;
+    }
+    div.kcw-movies-list-wrapper {
+        margin-top: 12.5px;
+    }
+    ul.kcw-movies-pagination li a {
+        font-size: 25px;
+        line-height: 30px;
+    }
+}
+
+/* For mobile */
+@media only screen and (max-width: 500px) {
+    ul.kcw-movies-list li, ul.kcw-movies-list li img {
+        width: 100%;
+        height: auto;
+    }
+    div.kcw-movies-length pre {
+        bottom: 50px;
+        padding: 0px 6px;
+        right: 10px;
+        font-size: 20px;
+        line-height: 26px;
+        border-radius: 5px;
+    }
+    p.kcw-movies-title {
+        font-size: 25px;
+    }
+    div.kcw-movies-playbutton {
+        height: 130px;
+        width: 212px;
+        border-radius: 15px;
+    }
+    div.kcw-movies-triangle {
+        margin-top: 22px;
+        margin-left: 74px;
+        --side-size: 44px;
+    }
+    div.kcw-movies-search {
+        font-size: 20px;
+    }
+}
