@@ -1,6 +1,29 @@
 <?php
 
 
+function kcw_movies_OrderArrayByAsc($array, $key) {
+    //Selection sort
+    for ($i = 0;$i < count($array) - 1;$i++) {
+        $minkey = strtotime($array[$i][$key]);
+        $minj = $i;
+        for ($j = $i + 1;$j < count($array);$j++) {
+            $curkey = strtotime($array[$j][$key]);
+            if ($curkey > $minkey) {
+                $minj = $j;
+                $minkey = $curkey;
+            }
+
+        }
+        //Swap
+        if ($minj != $i) {
+            $tmp = $array[$i];
+            $array[$i] = $array[$minj];
+            $array[$minj] = $tmp;
+        }
+    }
+    return $array;
+}
+
 //Build the html for a thumbnail element
 function kcw_movies_BuildThumbnailElement($type, $video) {
     $id = $video["id"];
@@ -108,9 +131,20 @@ function kcw_movies_GetYoutubeData() {
         //Personal token
         $token = "AIzaSyC5WjpUu_CdUls3RD_OBMv0H4ts-YIFgv8";
         //The KCW youtube channel
-        $channel = "UCApIjgEvgPjXmuhp_ngx88A";
-        $videos = kcw_movies_get_all_youtube_videos($token, $channel);
-        $cachedata = kcw_movies_BuildYoutubeCacheData($videos);        
+        //$channel = "UCApIjgEvgPjXmuhp_ngx88A";
+        //$videos = kcw_movies_get_all_youtube_videos($token, $channel);
+
+        $kcw_channel = "UCApIjgEvgPjXmuhp_ngx88A";
+        $videos_kcw = kcw_movies_get_all_youtube_videos($token, $kcw_channel);
+        
+        $franz_channel = "UCeFkmJX8p0h-ZSKflv_rI7A";
+        $videos_franz = kcw_movies_get_all_youtube_videos($token, $franz_channel);
+        
+        $videos = array_merge($videos_franz, $videos_kcw);
+        
+        $cachedata = kcw_movies_BuildYoutubeCacheData($videos);
+        $cachedata["data"] = kcw_movies_OrderArrayByAsc($cachedata["data"], "created");        
+        
         $json = kcw_movies_Cache($file, $cachedata);
     } else {
         $json = kcw_movies_GetCacheData($file);
