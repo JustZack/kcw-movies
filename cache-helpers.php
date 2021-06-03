@@ -46,14 +46,13 @@ function kcw_movies_ValidateCache() {
         $status["vimeo"] = 0;
         $status["uploads"] = $nextweek;
         $status["youtube"] = $tommorrow;
-        $status["instagram"] = $tommorrow;
         kcw_movies_Cache($file, $status);
     } else {
         $status = json_decode(kcw_movies_GetCacheData($file), true);
     }
 
     //Delete out of date caches, and update the cache time
-    $caches = array("youtube"=> $tommorrow, "instagram"=> $tommorrow, "uploads"=> $nextweek);
+    $caches = array("youtube"=> $tommorrow, "uploads"=> $nextweek);
     $changed = false;
     foreach ($caches as $str => $newtime) {
         if ($status[$str] < $now) {

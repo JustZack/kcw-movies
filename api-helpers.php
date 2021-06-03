@@ -1,4 +1,5 @@
 <?php
+
 //Return the http options array for performing requests
 function kcw_movies_get_http_options($header, $method, $content) {
     $options = array(
