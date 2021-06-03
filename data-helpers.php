@@ -169,7 +169,7 @@ function kcw_movies_GetListData() {
 
     $videos = array_merge($uploads["data"], $youtube["data"]);
     $videos = kcw_movies_OrderArrayByKeyAsc($videos, "created");
-    
+
     $videos = array_merge($videos, $vimeo["data"]);
     $movies["links"] = $links;
     $movies["data"] = $videos;
@@ -182,7 +182,10 @@ function kcw_movies_GetData() {
     $json = "{ 'vimeo': %s, 'uploads': %s, 'youtube': %s }";
     $vimeo = json_encode(kcw_movies_GetVimeoData());
     $uploads = json_encode( kcw_movies_GetVimeoUploadsData());
-    $youtube = json_encode(kcw_movies_GetYoutubeData());
+    
+    $ytd = kcw_movies_GetYoutubeData();
+    $ytd["data"] = kcw_movies_OrderArrayByKeyAsc($ytd["data"], "created");
+    $youtube = json_encode($ytd);
     //$youtube["data"] = kcw_movies_OrderArrayByKeyAsc($youtube["data"], "created");        
 
     return sprintf($json, $vimeo, $uploads, $youtube);
