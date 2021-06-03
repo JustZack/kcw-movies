@@ -141,6 +141,13 @@ function kcw_movies_DataToList($data) {
     return $list;
 }*/
 
+function kcw_movies_GetListData() {
+    $vimeo = kcw_movies_GetVimeoData();
+    $uploads = kcw_movies_GetVimeoUploadsData();
+    $youtube = kcw_movies_GetYoutubeData();
+    
+}
+
 //Return all movie data
 function kcw_movies_GetData() {
     $json = "{ 'vimeo': %s, 'uploads': %s, 'youtube': %s }";
