@@ -118,21 +118,6 @@ function kcw_movies_GetYoutubeData() {
     //Return the data
     return $json;
 }
-
-/*function kcw_movies_GetInstagramData() {
-    $json = "";
-    $file = kcw_movies_GetCacheFile("instagram");
-    if (!file_exists($file)) {
-        //App_id
-        $appid = "256554832711316";
-        //App Secret
-        $appsecret = "db415c8bc0391f93947a8f8e2cfe0a9f";
-        $token = "EAADpVdOrTpQBAPfP6Pp35YPofdZAKqbjkUDlphmeHvZAlcG0nZB6VB2MZAyMnAYEViRSzW7KwQYBidRBn8I9li8mYZC22OL0ViuqzJ7uJ2mLrkyZAxwyZCIZB8x2mNSU5zJaFX6QX0aNLa4VQCeR9T00OitDxzTCaCyT12QyOX1CDr4ZCKPQlQl208THsyMzSqtCUlCFY2PSLBxKHtuOXEQqQ5lKoS88ee0UZD";
-        $accountid = "966201676913692";
-        echo $token;
-    }
-}*/
-
 /*
 function kcw_movies_GetDataPage($data, $page, $per_page = 24) {
     $list = kcw_movies_DataToList($data);
@@ -158,7 +143,7 @@ function kcw_movies_DataToList($data) {
 
 //Return all movie data
 function kcw_movies_GetData() {
-    $json = "{'vimeo': %s, 'uploads': %s, 'youtube': %s, 'instagram': null}";
+    $json = "{ 'vimeo': %s, 'uploads': %s, 'youtube': %s }";
     $vimeo = kcw_movies_GetVimeoData();
     $uploads = kcw_movies_GetVimeoUploadsData();
     $youtube = kcw_movies_GetYoutubeData();

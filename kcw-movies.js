@@ -299,7 +299,6 @@ jQuery(document).ready(function(){
         var vimeo = [...kcw_movies['vimeo'].data];
         var uploads = [...kcw_movies['uploads'].data];
         var youtube = [...kcw_movies['youtube'].data];
-        //var instagram = [...kcw_movies['instagram'].data];
 
         var data = youtube.concat(uploads).concat(vimeo);
 
