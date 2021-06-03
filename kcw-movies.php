@@ -78,7 +78,6 @@ function kcw_movies_GetJSData() {
 }
 //Init KCW movies
 function kcw_movies_Init() {
-    var_dump(kcw_movies_api_GetListPage(null));
     //Validate the movies cache
     kcw_movies_ValidateCache();
 

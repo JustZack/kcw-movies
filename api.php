@@ -53,12 +53,16 @@ function kcw_movies_api_Page($fulldata, $page, $per_page, $data_key) {
     return $data;
 }
 
-function kcw_movies_api_GetList($data) {
-
+function kcw_movies_api_GetList() {
+    $data = array();
+    $data["lpage"] = 1;
+    return kcw_movies_api_GetListPage($data);
 }
 function kcw_movies_api_GetListPage($data) {
     $list = kcw_movies_GetListData();
-    return kcw_movies_api_Success($list);
+    $lpage = (int)$data["lpage"];
+    $list_page = kcw_movies_api_Page($list["data"], $lpage, 40, "items");
+    return kcw_movies_api_Success($list_page);
 }
 
 //Filter bad meaningless characters out of a search string
@@ -74,12 +78,11 @@ function kcw_movies_api_SearchMatches($search, $possible_match) {
 }
 //Return any galleries matching the given search string
 function kcw_movies_Search($string) {
-    //TODO:
-    //$list = kcw_gallery_GetListData();
+    $list = kcw_movies_GetListData();
     $filtered = kcw_movies_api_FilterString($string);
     $search_list = array();
-    foreach ($list as $item) {
-        $name = kcw_movies_api_FilterString($item["friendly_name"]);
+    foreach ($list["data"] as $item) {
+        $name = kcw_movies_api_FilterString($item["name"]);
         if (kcw_movies_api_SearchMatches($filtered, $name)) {
             $search_list[] = $item;
             continue;
@@ -119,7 +122,7 @@ function kcw_movies_api_RegisterRestRoutes() {
     global $kcw_movies_api_namespace;
     
     //Route for /list
-    register_rest_route( "$kcw_movies_api_namespace/v1", '/list/(?P<lpage>\d+)', array(
+    register_rest_route( "$kcw_movies_api_namespace/v1", '/list', array(
         'methods' => 'GET',
         'callback' => 'kcw_movies_api_GetList',
     ));

@@ -72,9 +72,11 @@ function kcw_movies_GetVimeoData() {
 
         $videos = kcw_movies_get_all_vimeo_videos($token, $user, $folder);
         $cachedata = kcw_movies_BuildVimeoCacheData($videos);        
-        $json = kcw_movies_Cache($file, $cachedata);
+        
+        $json = $cachedata;
+        kcw_movies_Cache($file, $cachedata);
     } else {
-        $json = kcw_movies_GetCacheData($file);
+        $json = kcw_movies_GetCacheDataJSON($file);
     }
 
     //Return the data
@@ -93,15 +95,16 @@ function kcw_movies_GetVimeoUploadsData() {
     
             $videos = kcw_movies_get_all_vimeo_videos($token, $user, $folder);
             $cachedata = kcw_movies_BuildVimeoCacheData($videos, "uploads");
-            $json = kcw_movies_Cache($file, $cachedata);
+            
+            $json = $cachedata;
+            kcw_movies_Cache($file, $cachedata);
         } else {
-            $json = kcw_movies_GetCacheData($file);
+            $json = kcw_movies_GetCacheDataJSON($file);
         }
     
         //Return the data
         return $json;
 }
-
 
 //Construct the youtube cache
 function kcw_movies_BuildYoutubeCacheData($videos) {
@@ -144,14 +147,16 @@ function kcw_movies_GetYoutubeData() {
         
         $cachedata = kcw_movies_BuildYoutubeCacheData($videos);
         
-        $json = kcw_movies_Cache($file, $cachedata);
+        $json = $cachedata;
+        kcw_movies_Cache($file, $cachedata);
     } else {
-        $json = kcw_movies_GetCacheData($file);
+        $json = kcw_movies_GetCacheDataJSON($file);
     }
     //Return the data
     return $json;
 }
 
+//Return all movie data as array
 function kcw_movies_GetListData() {
     $vimeo = kcw_movies_GetVimeoData();
     $uploads = kcw_movies_GetVimeoUploadsData();
@@ -162,20 +167,22 @@ function kcw_movies_GetListData() {
     //$links["uploads"] = [$uploads["link_prepend"], $uploads["embed_prepend"]];
     //$links["youtube"] = [$youtube["link_prepend"], $youtube["embed_prepend"]];
 
-    $videos = array_merge($vimeo["data"], $uploads["data"], $youtube["data"]);
-
+    $videos = array_merge($uploads["data"], $youtube["data"]);
+    $videos = kcw_movies_OrderArrayByKeyAsc($videos, "created");
+    
+    $videos = array_merge($videos, $vimeo["data"]);
     $movies["links"] = $links;
     $movies["data"] = $videos;
 
     return $movies;
 }
 
-//Return all movie data
+//Return all movie data as JSON
 function kcw_movies_GetData() {
     $json = "{ 'vimeo': %s, 'uploads': %s, 'youtube': %s }";
-    $vimeo = kcw_movies_GetVimeoData();
-    $uploads = kcw_movies_GetVimeoUploadsData();
-    $youtube = kcw_movies_GetYoutubeData();
+    $vimeo = json_encode(kcw_movies_GetVimeoData());
+    $uploads = json_encode( kcw_movies_GetVimeoUploadsData());
+    $youtube = json_encode(kcw_movies_GetYoutubeData());
     //$youtube["data"] = kcw_movies_OrderArrayByKeyAsc($youtube["data"], "created");        
 
     return sprintf($json, $vimeo, $uploads, $youtube);
