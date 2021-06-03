@@ -2,7 +2,7 @@
 
 include_once "data-helpers.php";
 
-$kcw_movies_api_namespace = "kcwgallery";
+$kcw_movies_api_namespace = "kcwmovies";
 $kcw_movies_api_url = home_url('wp-json/' . $kcw_movies_api_namespace . '/v1/');
 
 //Api request ran into error
@@ -57,7 +57,8 @@ function kcw_movies_api_GetList($data) {
 
 }
 function kcw_movies_api_GetListPage($data) {
-    $list = kcw_movies_
+    $list = kcw_movies_GetListData();
+    return kcw_movies_api_Success($list);
 }
 
 //Filter bad meaningless characters out of a search string
@@ -120,12 +121,12 @@ function kcw_movies_api_RegisterRestRoutes() {
     //Route for /list
     register_rest_route( "$kcw_movies_api_namespace/v1", '/list/(?P<lpage>\d+)', array(
         'methods' => 'GET',
-        'callback' => 'kcw_movies_api_GetSearch',
+        'callback' => 'kcw_movies_api_GetList',
     ));
     //Route for /list/page
     register_rest_route( "$kcw_movies_api_namespace/v1", '/list/(?P<lpage>\d+)', array(
         'methods' => 'GET',
-        'callback' => 'kcw_movies_api_GetSearch',
+        'callback' => 'kcw_movies_api_GetListPage',
     ));
 
     //Route for /search/search-string

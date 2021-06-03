@@ -1,7 +1,7 @@
 <?php
 
 
-function kcw_movies_OrderArrayByAsc($array, $key) {
+function kcw_movies_OrderArrayByKeyAsc($array, $key) {
     //Selection sort
     for ($i = 0;$i < count($array) - 1;$i++) {
         $minkey = strtotime($array[$i][$key]);
@@ -143,7 +143,6 @@ function kcw_movies_GetYoutubeData() {
         $videos = array_merge($videos_franz, $videos_kcw);
         
         $cachedata = kcw_movies_BuildYoutubeCacheData($videos);
-        $cachedata["data"] = kcw_movies_OrderArrayByAsc($cachedata["data"], "created");        
         
         $json = kcw_movies_Cache($file, $cachedata);
     } else {
@@ -152,34 +151,23 @@ function kcw_movies_GetYoutubeData() {
     //Return the data
     return $json;
 }
-/*
-function kcw_movies_GetDataPage($data, $page, $per_page = 24) {
-    $list = kcw_movies_DataToList($data);
-    $start = ($page - 1) * $per_page;
-    return array_slice($list, $start, $per_page);
-}
-
-function kcw_movies_DataToList($data) {
-    $order = array("youtube", "uploads", "vimeo");
-
-    $obj = json_decode($data, true);
-
-    $list = array();
-    var_dump($obj);
-    echo json_last_error_msg();
-    foreach ($order as &$src) {
-        for ($i = 0;$i < count($obj[$src]["data"]);$i++) {
-            $list[] = $obj[$src]["data"][$i];
-        }
-    }
-    return $list;
-}*/
 
 function kcw_movies_GetListData() {
     $vimeo = kcw_movies_GetVimeoData();
     $uploads = kcw_movies_GetVimeoUploadsData();
     $youtube = kcw_movies_GetYoutubeData();
-    
+
+    $links = array();
+    //$links["vimeo"] = [$vimeo["link_prepend"], $vimeo["embed_prepend"]];
+    //$links["uploads"] = [$uploads["link_prepend"], $uploads["embed_prepend"]];
+    //$links["youtube"] = [$youtube["link_prepend"], $youtube["embed_prepend"]];
+
+    $videos = array_merge($vimeo["data"], $uploads["data"], $youtube["data"]);
+
+    $movies["links"] = $links;
+    $movies["data"] = $videos;
+
+    return $movies;
 }
 
 //Return all movie data
@@ -188,6 +176,8 @@ function kcw_movies_GetData() {
     $vimeo = kcw_movies_GetVimeoData();
     $uploads = kcw_movies_GetVimeoUploadsData();
     $youtube = kcw_movies_GetYoutubeData();
+    //$youtube["data"] = kcw_movies_OrderArrayByKeyAsc($youtube["data"], "created");        
+
     return sprintf($json, $vimeo, $uploads, $youtube);
 }
 

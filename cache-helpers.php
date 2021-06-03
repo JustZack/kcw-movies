@@ -14,6 +14,10 @@ function kcw_movies_GetCacheFile($type) {
 function kcw_movies_GetCacheData($cachefilename) {
     return file_get_contents($cachefilename);
 }
+//Return cache data as json given the filename
+function kcw_movies_GetCacheDataJSON($cachefilename) {
+    return  json_decode(kcw_movies_GetCacheData($cachefilename), true);
+}
 //Cache the given data to the specified cache type
 function kcw_movies_Cache($file, $data) {
     //Ensure the cache directory exists
