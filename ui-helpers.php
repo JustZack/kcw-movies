@@ -110,14 +110,16 @@ function kcw_movies_ui_GetListDisplay() {
     if (isset($search)) $vlist = kcw_movies_api_GetSearch($data);
     else                $vlist = kcw_movies_api_GetListPage($data);
 
+    global $kcw_movies_api_url;
     $js_data = array();
+    $js_data["api_url"] = $kcw_movies_api_url;
     $js_data["links"] = $vlist["links"];
     $js_data["total"] = $vlist["total"];
     $js_data["per_page"] = $vlist["per_page"];
     $js_data["pages"] = array();    
-    for ($i = 0;$i < $page;$i++) $js_data["pages"][$i] = [];
+    for ($i = 0;$i < $page-1;$i++) $js_data["pages"][$i] = [];
 
-    $js_data["pages"][(int)$page] = $vlist["items"];
+    $js_data["pages"][(int)$page-1] = $vlist["items"];
     $list_html = kcw_movies_ui_GetJSData(json_encode($js_data));
 
     $list_html .= kcw_movies_ui_GetListStartHTML();

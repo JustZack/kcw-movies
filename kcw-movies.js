@@ -133,69 +133,68 @@ jQuery(document).ready(function(){
         });
     }
 
-    /*
-        Functions dealing with searching through videos
-    */
-   var searchTimeout = null;
-   var ms_between_keypress = 550;
-   var ms_keypress_wait = 650;
-   var ms_short_wait = 300;
-   //Handle any key downs, primarily to detect pressing enter
     jQuery("div.kcw-movies-search input").on("keydown", function (e, key){
         if (e.which == 13) DoImmediateSearch();
     });
-    //Handle performing and immediate search
-    function DoImmediateSearch() {
-        //Clear the delayed search
-        clearTimeout(searchTimeout);
-        //Perform the search immediately
-        var search = jQuery("div.kcw-movies-search input").val();
-        DoSearch(search);
-        jQuery("div.kcw-movies-search input").blur();
-    }
-    //Handle typing in the search bar
     jQuery("div.kcw-movies-search input").on("input", function (){
-        DoDelayedSearch();
+        if (!isLoading) DoDelayedSearch();
     });
 
+    var searchTimeout = null;
+    var ms_between_keypress = 550;
+    var ms_keypress_wait = 650;
+    var ms_short_wait = 300;
+    var lastSearch = 0;
+    //Handle performing and immediate search
+    function DoImmediateSearch() {
+         //Clear the delayed search
+         clearTimeout(searchTimeout);
+         //Perform the search immediately
+         var search = jQuery("div.kcw-movies-search input").val();
+         ShowSearch(search);
+         jQuery("div.kcw-movies-search input").blur();
+    }
     //Handle delaying & performing search until user is 'done' typing
     function DoDelayedSearch() {
-        var search = jQuery("div.kcw-movies-search input").val();
-        var timeDiff = Date.now() - lastSearch;
-        lastSearch = Date.now();
-        var wait = 0;
-
-        clearTimeout(searchTimeout);
-        if (timeDiff <= ms_between_keypress) wait = ms_keypress_wait;
-        else                                 wait = ms_short_wait;
-        searchTimeout = setTimeout(DoSearch, wait, search); 
+         var search = jQuery("div.kcw-movies-search input").val();
+         var timeDiff = Date.now() - lastSearch;
+         lastSearch = Date.now();
+         var wait = 0;
+ 
+         clearTimeout(searchTimeout);
+         if (timeDiff <= ms_between_keypress) wait = ms_keypress_wait;
+         else                                 wait = ms_short_wait;
+         searchTimeout = setTimeout(ShowSearch, wait, search); 
     }
-    //Perform the search. Alias for updateResults
-    function DoSearch(search) {
-        updateResults(search);
+    //Filter search string
+    function FilterSearch(search) {
+        search = search.replace(' ', '+');
+        search = search.replace('/', '');
+        search = search.replace('\\', '');
+        search = search.replace('/[^A-Za-z0-9]+/g', '');
+        return search;
+    }
+    //Perform the search.
+    function ShowSearch(search) {
+        /*if (search.length == 0) {
+            kcw_movies.pages = undefined;
+            kcw_movies.search = undefined;
+            ShowGalleryListPage(1);
+        } else {
+            jQuery("div.kcw-gallery-list-container").css({display: "block"});
+            ShowLoadingGif(null);
+
+            if (kcw_gallery.list == undefined || kcw_gallery.list.pages == undefined
+            || kcw_gallery.list.pages[0] == undefined || kcw_gallery.list.search != search) {
+                ApiCall("search/", FilterSearch(search), ShowGalleryListPage_callback);
+            } else {
+                DisplayGalleryList(0);
+            }
+        }*/
     }
 
-    /*
-        Methods used to display the movies page
-    */
-    //Update the vimeo video list based on the given search string
-    function updateResults(search) {
-        if (search == undefined || search == null) search = currentsearch;
-        else  { 
-            if (search == currentsearch) return;
-            else if (search.length > 0) currentpage = 1;
-        }
-
-        search = removeSpecial(search);
-        currentsearch = search;
-        searchSet = findVideos(currentsearch);
-
-        DisplayPagingLinks(searchSet.length, perpage);
-        ShowVideoPage(currentpage, perpage);
-        searchTimeout = null;
-    }
-    //Show the paging links or the current set of videos
-    function DisplayPagingLinks(total, perpage) {
+    //Show the paging links for the current set of videos
+    function DisplayPagingLinks(total, perpage, current = 0) {
         jQuery("ul.kcw-movies-pagination").empty();
         
         var totalpages = total/perpage;
@@ -203,7 +202,7 @@ jQuery(document).ready(function(){
         for (var i = 0;i < totalpages;i++) {
             var $link = jQuery("<a></a>");
 
-            if (i == 0) {
+            if (i == current) {
                 $link.attr({
                     "class": "current_page"
                 });
@@ -219,11 +218,7 @@ jQuery(document).ready(function(){
             jQuery("ul.kcw-movies-pagination").append($li);
         }
     }
-    //Return the set of videos starting at start and ending at end
-    //Based on the current search set
-    function GetVideoSubset(start, end) {
-        return searchSet.slice(start, end);
-    }
+
     //Get a subset of videos and display them
     function ShowVideoPage(page, perpage) {
         HidePlayButton();
@@ -265,45 +260,7 @@ jQuery(document).ready(function(){
 
         SetQueryParameters();        
     }
-    //Load elements one after another instead of all at once
-    function loadElements(pageVideos, index, atonce) {
-        //break if the element doesnt exist
-        if (index < pageVideos.length) {
-            var $thumb = jQuery(pageVideos[index].html);
-            jQuery("ul.kcw-movies-list").append($thumb);
-            jQuery("img", $thumb).load(function() {
-                setTimeout(function($t) {
-                    jQuery($t).parent().animate({opacity: 1}, 175);
-                    loadElements(pageVideos, index + 1);
-                }, 1, jQuery(this));
-            });
-        }
-    }
-    //Return all videos with a title LIKE the given search
-    function findVideos(search) {
-        var vids = getAllVideos();
-
-        if (search.length == 0 || search == undefined) return vids;
-
-        var searchMatch = [];
-        for (var i = 0;i < vids.length;i++) {
-            var lowerVid = removeSpecial(vids[i].name);
-            if (lowerVid.indexOf(search) > -1) {
-                //console.log("'" + search + "' => '" + lowerVid + "'");
-                searchMatch.push(vids[i]);
-            }
-        }
-        return searchMatch;
-    }
-    function getAllVideos() {
-        var vimeo = [...kcw_movies['vimeo'].data];
-        var uploads = [...kcw_movies['uploads'].data];
-        var youtube = [...kcw_movies['youtube'].data];
-
-        var data = youtube.concat(uploads).concat(vimeo);
-
-        return data;
-    }
+   
     //Remove all non alphanumeric characters from a string to simplify it
     function removeSpecial(str) {
         return str.replace(/[^\w\s]/gi, '').trim().toLowerCase();
@@ -314,11 +271,45 @@ jQuery(document).ready(function(){
         var page = jQuery(this).parent().data("page");
         var current = jQuery("ul.kcw-movies-pagination li a.current_page").parent().data("page");
             
-        if (page != current) ShowVideoPage(page, perpage);
+        if (page != current) ShowListPage(page);
 
         var offset = jQuery("ul.kcw-movies-list").offset().top - 150;
         jQuery("html, body").animate({scrollTop: offset}, 400);
     });
+
+    function ShowListPage(page) {
+        //Check if the page is cached
+        if (page > kcw_movies.pages.length || kcw_movies.pages[page-1] == undefined || kcw_movies.pages[page-1].length == 0) {
+            if (page < 1) page = 1;
+            ApiCall("list", "/"+page, function(data) { 
+                kcw_movies.pages[page-1] = data.items; 
+                DisplayListPage(page);
+            });
+        } else {
+            DisplayListPage(page);
+        }
+
+        
+    }
+
+    function DisplayListPage(page) {
+        var videos = kcw_movies.pages[page-1];
+
+        jQuery("ul.kcw-movies-list").empty();
+        for (var i = 0;i < videos.length;i++) {
+            var $li = jQuery("<li>" + BuildVideoThumbnail(videos[i]) + "</li>");
+            jQuery("ul.kcw-movies-list").append($li);
+        }
+        DisplayPagingLinks(kcw_movies.total, kcw_movies.per_page, page-1);
+    }
+
+    function BuildVideoThumbnail(video) {
+        var thumb = `<a class='kcw-movies-thumb-wrapper' data-src='${video.src}' data-id='${video.id}' title='${video.name}'>`;
+        thumb += `<img class='kcw-movies-thumb' src='${video.thumb}' alt='${video.name}' width='320', height='180'>`;
+        thumb += `<p class='kcw-movies-title'>${video.name}</p>`;
+        thumb += `<div class='kcw-movies-length'><pre class='kcw-movies-length'>${video.length}</pre></div>`;
+        return thumb;
+    }
 
     /*
         Functions dealing with displaying videos
@@ -389,11 +380,46 @@ jQuery(document).ready(function(){
         }
     }
 
+
+    //Perform an API call to the gallery
+    var api_url = kcw_movies.api_url;
+    var current_request = null;
+    function ApiCall(endpoint, paremeter_string, then) {
+        var url = api_url + endpoint + paremeter_string;
+        console.log("REQUEST: " + url);
+        if (current_request != null) current_request.abort();
+        current_request = jQuery.get(url, then).done(function() {
+        }).fail(function() {
+            FailedRequest(endpoint);
+        }).always(function() {
+
+        });
+    }
+
+    function FailedRequest(endpoint) {
+        //Search API error
+        if (endpoint.indexOf("search") > -1) {
+            NoSearchResults();
+        } 
+        //List API error
+        else if (endpoint.indexOf("list") > -1) {
+        } 
+
+        console.log("Request Failed");
+    }
+
+    function NoSearchResults() {
+        jQuery("h3.kcw-movies-list-message").text("No results for " + jQuery("div.kcw-movies-search input").val());
+        jQuery("h3.kcw-movies-list-message").css({display: "block"});
+        jQuery("ul.kcw-movies-pagination").css({display: "none"});
+        jQuery("ul.kcw-movies-list").css({display: "none"});
+    }
+
     //Setup the KCW movies application
     (function initKCWMovies() {
         GetQueryStringParameters();
         
-        DisplayPagingLinks(kcw_movies.total, kcw_movies.perpage);
+        DisplayPagingLinks(kcw_movies.total, kcw_movies.per_page);
     })();
 
     /*
