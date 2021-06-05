@@ -140,7 +140,10 @@ function kcw_movies_GetYoutubeData() {
         $franz_channel = "UCeFkmJX8p0h-ZSKflv_rI7A";
         $videos_franz = kcw_movies_get_all_youtube_videos($token, $franz_channel);
         
-        $videos = array_merge($videos_franz, $videos_kcw);
+        $audrey_channel = "UCO6ru5l9ZSGI_kM5HLvvt0w";
+        $videos_audrey = kcw_movies_get_all_youtube_videos($token, $audrey_channel);
+
+        $videos = array_merge( $videos_audrey, $videos_franz, $videos_kcw);
         
         $cachedata = kcw_movies_BuildYoutubeCacheData($videos);
         $cachedata["data"] = kcw_movies_OrderArrayByAsc($cachedata["data"], "created");        
