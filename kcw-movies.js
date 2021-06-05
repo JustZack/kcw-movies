@@ -345,13 +345,12 @@ jQuery(document).ready(function(){
     function DoVideoDisplay(videoid, videosrc) {
         currentvideo = videoid;
         currentsrc = videosrc;
-        for (var i = 0;;i++) {
+        for (var i = 0;i < kcw_movies.items.length;i++) {
 
-            if (kcw_movies[videosrc].data[i].id == videoid) {
-                var video = kcw_movies[videosrc].data[i];
-
-                var embedlink = kcw_movies[videosrc].embed_prepend + video.id;
-                var link = kcw_movies[videosrc].link_prepend + video.id;
+            if (kcw_movies.items[i].id == videoid && kcw_movies.items[i].src == videosrc) {
+                var video = kcw_movies.items[i];
+                var embedlink = kcw_movies.links[videosrc].embed + video.id;
+                var link = kcw_movies.links[videosrc].link + video.id;
 
                 DisplayVideo(embedlink, video.name);
                 DisplayVideoDetails(video.name, video.views, video.created, link);
@@ -391,12 +390,7 @@ jQuery(document).ready(function(){
     (function initKCWMovies() {
         GetQueryStringParameters();
         
-        updateResults();
-
-        if (currentvideo != null) DoVideoDisplay(currentvideo, currentsrc);
-
-        jQuery("div.kcw-movies-search input").val(currentsearch);
-
+        DisplayPagingLinks(kcw_movies.total, kcw_movies.perpage);
     })();
 
     /*

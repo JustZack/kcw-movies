@@ -27,21 +27,6 @@ function kcw_movies_OrderArrayByKeyAsc($array, $key) {
     return $array;
 }
 
-//Build the html for a thumbnail element **OLD FORMATTING**
-function kcw_movies_BuildThumbnailElement($type, $video) {
-    $id = $video["id"];
-    $name = $video["name"];
-    $thumb_src = $video["thumb"]["link"];
-    $thumb_width = $video["thumb"]["width"];
-    $thumb_height = $video["thumb"]["height"];
-    $duration = $video["length"];
-
-    $alt = str_replace('\'', '', $name);
-    $alt = str_replace('\"', '', $alt);
-    $html = "<li><a class='kcw-movies-thumb-wrapper' data-src='$type' data-id='$id' title='$alt'><img class='kcw-movies-thumb' src='$thumb_src' alt='$alt' width='$thumb_width' height='$thumb_height'><p class='kcw-movies-title'>$name</p><div class='kcw-movies-length'><pre class='kcw-movies-length'>$duration</pre></div></a></li>";
-    return $html;
-}
-
 //Construct the vimeo cache data
 function kcw_movies_BuildVimeoCacheData($videos, $type = "vimeo") {
     $cachedata = array();
@@ -59,8 +44,6 @@ function kcw_movies_BuildVimeoCacheData($videos, $type = "vimeo") {
         $element["thumb"] = $videos[$i]["thumb"]["link"];
         $element["views"] = $videos[$i]["stats"]["plays"];
         $element["created"] = $videos[$i]["created"];
-        //TODO:
-        $element["html"] = kcw_movies_BuildThumbnailElement($type, $videos[$i]);
 
         $cachedata["data"][] = $element;
     }
@@ -131,8 +114,6 @@ function kcw_movies_BuildYoutubeCacheData($videos) {
         $element["thumb"] = $videos[$i]["thumb"]["link"];
         $element["views"] = $videos[$i]["stats"]["viewCount"];
         $element["created"] = $videos[$i]["published"];
-        //TODO:
-        $element["html"] = kcw_movies_BuildThumbnailElement("youtube", $videos[$i]);
         
         $cachedata["data"][] = $element;
     }
