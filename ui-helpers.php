@@ -73,7 +73,8 @@ function kcw_movies_ui_GetListEndHTML() {
             <div class='kcw-movies-pagination-wrapper'>
                 <ul class='kcw-movies-pagination pagination-bottom'></ul>
             </div>
-        </div>";
+        </div>
+        <div class='kcw-movies-playbutton'><div class='kcw-movies-triangle'></div>";
 }
 
 //Build html for setting js data
