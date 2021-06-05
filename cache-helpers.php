@@ -57,17 +57,22 @@ function kcw_movies_ValidateCache() {
 
     //Delete out of date caches, and update the cache time
     $caches = array("youtube"=> $tommorrow, "uploads"=> $nextweek);
-    $changed = false;
+    $deleted = false;
     foreach ($caches as $str => $newtime) {
         if ($status[$str] < $now) {
             kcw_movies_DeleteCache($str);
             $status[$str] = $newtime;
-            $changed = true;
+            $deleted = true;
         }
     }
 
-    //Only update the cache if any of the cache was invalidated
-    if ($changed) kcw_movies_Cache($file, $status);
+    //If any cache file was deleted
+    if ($deleted) { 
+        //Update the status file
+        kcw_movies_Cache($file, $status);
+        //Delete the 'total' cache
+        kcw_movies_DeleteCache("movies");
+    }
 }
 
 ?>

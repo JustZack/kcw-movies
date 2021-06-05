@@ -18,7 +18,6 @@ function kcw_movies_api_Success($data) {
     $data["time"] = time();
     return $data;
 }
-
 //Return a page of the given data
 function kcw_movies_api_Page($fulldata, $page, $per_page, $data_key) {
     $data = array();
@@ -52,19 +51,19 @@ function kcw_movies_api_Page($fulldata, $page, $per_page, $data_key) {
 
     return $data;
 }
-
+//Return the first page of the video list
 function kcw_movies_api_GetList() {
     $data = array();
     $data["lpage"] = 1;
     return kcw_movies_api_GetListPage($data);
 }
+//Return the given page of the video list
 function kcw_movies_api_GetListPage($data) {
-    $list = kcw_movies_GetListData();
+    $list = kcw_movies_GetVideoCacheData();
     $lpage = (int)$data["lpage"];
     $list_page = kcw_movies_api_Page($list["data"], $lpage, 40, "items");
     return kcw_movies_api_Success($list_page);
 }
-
 //Filter bad meaningless characters out of a search string
 function kcw_movies_api_FilterString($search) {
     $search = preg_replace("/\%20/", '', $search);
@@ -78,7 +77,7 @@ function kcw_movies_api_SearchMatches($search, $possible_match) {
 }
 //Return any galleries matching the given search string
 function kcw_movies_Search($string) {
-    $list = kcw_movies_GetListData();
+    $list = kcw_movies_GetVideoCacheData();
     $filtered = kcw_movies_api_FilterString($string);
     $search_list = array();
     foreach ($list["data"] as $item) {
@@ -116,8 +115,7 @@ function kcw_movies_api_GetSearchPage($data) {
     $list_page["search"] = ($data["lsearch"]);
     return kcw_movies_api_Success($list_page);
 }
-
-//Register all the API routes
+//Register API routes
 function kcw_movies_api_RegisterRestRoutes() {
     global $kcw_movies_api_namespace;
     
@@ -130,6 +128,12 @@ function kcw_movies_api_RegisterRestRoutes() {
     register_rest_route( "$kcw_movies_api_namespace/v1", '/list/(?P<lpage>\d+)', array(
         'methods' => 'GET',
         'callback' => 'kcw_movies_api_GetListPage',
+    ));
+
+    //Route for /search/NULL
+    register_rest_route( "$kcw_movies_api_namespace/v1", '/search', array(
+        'methods' => 'GET',
+        'callback' => 'kcw_movies_api_GetList',
     ));
 
     //Route for /search/search-string

@@ -27,7 +27,7 @@ function kcw_movies_OrderArrayByKeyAsc($array, $key) {
     return $array;
 }
 
-//Build the html for a thumbnail element
+//Build the html for a thumbnail element **OLD FORMATTING**
 function kcw_movies_BuildThumbnailElement($type, $video) {
     $id = $video["id"];
     $name = $video["name"];
@@ -54,14 +54,19 @@ function kcw_movies_BuildVimeoCacheData($videos, $type = "vimeo") {
         
         $element["id"] = $videos[$i]["id"];
         $element["name"] = $videos[$i]["name"];
+        $element["length"] = $videos[$i]["length"];
+        $element["src"] = $type;
+        $element["thumb"] = $videos[$i]["thumb"]["link"];
         $element["views"] = $videos[$i]["stats"]["plays"];
         $element["created"] = $videos[$i]["created"];
+        //TODO:
         $element["html"] = kcw_movies_BuildThumbnailElement($type, $videos[$i]);
 
         $cachedata["data"][] = $element;
     }
     return $cachedata;
 }
+
 //Get the nessesary data for vimeo videos
 function kcw_movies_GetVimeoData() {
     //Cache / Fetch the Vimeo JSON data
@@ -121,14 +126,19 @@ function kcw_movies_BuildYoutubeCacheData($videos) {
         
         $element["id"] = $videos[$i]["id"];
         $element["name"] = $videos[$i]["name"];
+        $element["length"] = $videos[$i]["length"];
+        $element["src"] = "youtube";
+        $element["thumb"] = $videos[$i]["thumb"]["link"];
         $element["views"] = $videos[$i]["stats"]["viewCount"];
         $element["created"] = $videos[$i]["published"];
+        //TODO:
         $element["html"] = kcw_movies_BuildThumbnailElement("youtube", $videos[$i]);
-
+        
         $cachedata["data"][] = $element;
     }
     return $cachedata;
 }
+
 //Get the nessesary data for youtube videos
 function kcw_movies_GetYoutubeData() {
     $json = "";
@@ -162,28 +172,7 @@ function kcw_movies_GetYoutubeData() {
     return $json;
 }
 
-//Return all movie data as array
-function kcw_movies_GetListData() {
-    $vimeo = kcw_movies_GetVimeoData();
-    $uploads = kcw_movies_GetVimeoUploadsData();
-    $youtube = kcw_movies_GetYoutubeData();
-
-    $links = array();
-    //$links["vimeo"] = [$vimeo["link_prepend"], $vimeo["embed_prepend"]];
-    //$links["uploads"] = [$uploads["link_prepend"], $uploads["embed_prepend"]];
-    //$links["youtube"] = [$youtube["link_prepend"], $youtube["embed_prepend"]];
-
-    $videos = array_merge($uploads["data"], $youtube["data"]);
-    $videos = kcw_movies_OrderArrayByKeyAsc($videos, "created");
-
-    $videos = array_merge($videos, $vimeo["data"]);
-    $movies["links"] = $links;
-    $movies["data"] = $videos;
-
-    return $movies;
-}
-
-//Return all movie data as JSON
+//Return all movie data as JSON **OLD FORMATTING**
 function kcw_movies_GetData() {
     $vimeo = json_encode(kcw_movies_GetVimeoData());
     $uploads = json_encode( kcw_movies_GetVimeoUploadsData());
@@ -194,6 +183,35 @@ function kcw_movies_GetData() {
 
     $json = "{ 'vimeo': %s, 'uploads': %s, 'youtube': %s }";
     return sprintf($json, $vimeo, $uploads, $youtube);
+}
+
+//Get the full video cache
+function kcw_movies_GetVideoCacheData() {
+    $movies = array();
+    $file = kcw_movies_GetCacheFile("movies");
+    if (!file_exists($file)) {
+        $vimeo = kcw_movies_GetVimeoData();
+        $uploads = kcw_movies_GetVimeoUploadsData();
+        $youtube = kcw_movies_GetYoutubeData();
+    
+        $links = array();
+        //$links["vimeo"] = [$vimeo["link_prepend"], $vimeo["embed_prepend"]];
+        //$links["uploads"] = [$uploads["link_prepend"], $uploads["embed_prepend"]];
+        //$links["youtube"] = [$youtube["link_prepend"], $youtube["embed_prepend"]];
+    
+        $videos = array_merge($uploads["data"], $youtube["data"]);
+        $videos = kcw_movies_OrderArrayByKeyAsc($videos, "created");
+        $videos = array_merge($videos, $vimeo["data"]);
+
+        $movies["links"] = $links;
+        $movies["data"] = $videos;
+
+        kcw_movies_Cache($file, $movies);
+    } else {
+        $movies = kcw_movies_GetCacheDataJSON($file);
+    }
+    //Return the data
+    return $movies;
 }
 
 ?>
