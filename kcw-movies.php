@@ -10,11 +10,7 @@
 
 defined( 'ABSPATH' ) or die('');
 
-include_once "cache-helpers.php";
-include_once "vimeo-helpers.php";
-include_once "youtube-helpers.php";
 include_once "api.php";
-include_once "data-helpers.php";
 
 function kcw_movies_register_dependencies() {
     wp_register_style("kcw-movies", plugins_url("kcw-movies.css", __FILE__), null, "1.4.2");
@@ -25,6 +21,19 @@ add_action("wp_enqueue_scripts", "kcw_movies_register_dependencies");
 function kcw_movies_enqueue_dependencies() {
     wp_enqueue_style("kcw-movies");
     wp_enqueue_script("kcw-movies");
+}
+
+function kcw_movies_BuildListItem() {
+    
+}
+
+//Build up the video display
+function kcw_movies_BuildVideoDisplay() {
+    
+}
+//Build up the list display
+function kcw_movies_BuildListDisplay() {
+
 }
 
 //The head of the movies wrapper

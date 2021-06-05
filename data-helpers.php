@@ -1,5 +1,8 @@
 <?php
 
+include_once "cache-helpers.php";
+include_once "vimeo-helpers.php";
+include_once "youtube-helpers.php";
 
 function kcw_movies_OrderArrayByKeyAsc($array, $key) {
     //Selection sort
@@ -182,15 +185,14 @@ function kcw_movies_GetListData() {
 
 //Return all movie data as JSON
 function kcw_movies_GetData() {
-    $json = "{ 'vimeo': %s, 'uploads': %s, 'youtube': %s }";
     $vimeo = json_encode(kcw_movies_GetVimeoData());
     $uploads = json_encode( kcw_movies_GetVimeoUploadsData());
     
     $ytd = kcw_movies_GetYoutubeData();
     $ytd["data"] = kcw_movies_OrderArrayByKeyAsc($ytd["data"], "created");
     $youtube = json_encode($ytd);
-    //$youtube["data"] = kcw_movies_OrderArrayByKeyAsc($youtube["data"], "created");        
 
+    $json = "{ 'vimeo': %s, 'uploads': %s, 'youtube': %s }";
     return sprintf($json, $vimeo, $uploads, $youtube);
 }
 
