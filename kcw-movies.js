@@ -340,23 +340,24 @@ jQuery(document).ready(function(){
         DoPlayButton(-9999, -9999, null, false); 
         DoVideoDisplay(videoid, videosrc);
         hideEmbedCode();
-    });
+    }); 
     //Show a selected video
     function DoVideoDisplay(videoid, videosrc) {
         currentvideo = videoid;
         currentsrc = videosrc;
-        for (var i = 0;i < kcw_movies.items.length;i++) {
+        for (var i = 0;i < kcw_movies.pages.length;i++) {
+            for (var j = 0;j < kcw_movies.pages[i].length;j++) {
+                if (kcw_movies.pages[i][j].id == videoid && kcw_movies.pages[i][j].src == videosrc) {
+                    var video = kcw_movies.pages[i][j];
+                    var embedlink = kcw_movies.links[videosrc].embed + video.id;
+                    var link = kcw_movies.links[videosrc].link + video.id;
 
-            if (kcw_movies.items[i].id == videoid && kcw_movies.items[i].src == videosrc) {
-                var video = kcw_movies.items[i];
-                var embedlink = kcw_movies.links[videosrc].embed + video.id;
-                var link = kcw_movies.links[videosrc].link + video.id;
-
-                DisplayVideo(embedlink, video.name);
-                DisplayVideoDetails(video.name, video.views, video.created, link);
-                SetQueryParameters();
-                HidePlayButton();
-                break;
+                    DisplayVideo(embedlink, video.name);
+                    DisplayVideoDetails(video.name, video.views, video.created, link);
+                    SetQueryParameters();
+                    HidePlayButton();
+                    break;
+                }
             }
         }
     }
