@@ -85,7 +85,7 @@ function kcw_movies_ui_GetJSData($data) {
 function kcw_movies_ui_BuildListItem($video) {
     //var_dump($video);
     $id = $video["id"];
-    $type = $video["type"];
+    $type = $video["src"];
     $name = $video["name"];
     $thumb_src = $video["thumb"];
     $thumb_width = 320;
