@@ -2,11 +2,47 @@
 
 //include_once "api.php";
 
-
-
+//Return the html format of the video display
+function kcw_moives_ui_VideoDisplayHTMl() {
+    $video_html = "
+    <div class='kcw-movies-video' style='display: %s;opacity: %s;'>
+        <iframe title='%s' src='%s' allow='autoplay; picture-in-picture' allowfullscreen='true' frameborder='0'></iframe>
+        <div class='kcw-movies-video-info'> 
+            <h3 class='kcw-movies-video-title'>%s</h3>
+            <p class='kcw-movies-video-views'>%s</p>
+            <p class='kcw-movies-video-separator' style='display: inline;'>-</p>
+            <p class='kcw-movies-video-created' style='display: inline;'>%s</p>
+            <a class='kcw-movies-copy-embed'>
+                <span class='dashicons dashicons-shortcode'></span><h4>Embed</h4>
+                <input type='text' value='%s' class='kcw-movies-link' style='width: 0px; opacity: 0; margin-left: 0px; padding: 0px;'>
+            </a>
+            <div class='kcw-movies-copy-embed-message' style='position:absolute; left: -9999px;'>Copied!</div>
+        </div>
+    </div>";
+    return $video_html;
+}
 //Build up the video display (using video data in $_GET)
 function kcw_movies_ui_GetVideoHTML() {
+    $list = kcw_movies_GetVideoCacheData();
+    $id = $_GET["v"];
+    $src = $_GET["vsrc"];
 
+    $video_html = kcw_moives_ui_VideoDisplayHTMl();
+
+    if (isset($id) && isset($src) && strlen($id) > 0 && strlen($src) > 0) {
+        foreach ($list["data"] as $video) {
+            if ($video["id"] == $id && $video["src"] == $src) {
+                $v_src = $list["links"][$src]["embed"] . $id;
+                $v_title = $video["name"];
+                $v_views = $video["views"];
+                $v_published = $video["created"];
+
+                return sprintf($video_html, "block", 1, $v_title, $v_src, $v_title, $v_views, $v_published, $v_src);
+            }
+        }
+    }
+
+    return sprintf($video_html, "none", 0, "", "", "" , "", "", "", "");
 }
 
 //Search html (with search in $_GET)

@@ -195,9 +195,8 @@ function kcw_movies_GetVideoCacheData() {
         $youtube = kcw_movies_GetYoutubeData();
     
         $links = array();
-        //$links["vimeo"] = [$vimeo["link_prepend"], $vimeo["embed_prepend"]];
-        //$links["uploads"] = [$uploads["link_prepend"], $uploads["embed_prepend"]];
-        //$links["youtube"] = [$youtube["link_prepend"], $youtube["embed_prepend"]];
+        $links["vimeo"] = array("link" => $vimeo["link_prepend"], "embed" => $vimeo["embed_prepend"]);
+        $links["youtube"] = array("link" => $youtube["link_prepend"], "embed" => $youtube["embed_prepend"]);
     
         $videos = array_merge($uploads["data"], $youtube["data"]);
         $videos = kcw_movies_OrderArrayByKeyAsc($videos, "created");
