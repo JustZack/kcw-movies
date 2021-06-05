@@ -350,10 +350,9 @@ jQuery(document).ready(function(){
                 if (kcw_movies.pages[i][j].id == videoid && kcw_movies.pages[i][j].src == videosrc) {
                     var video = kcw_movies.pages[i][j];
                     var embedlink = kcw_movies.links[videosrc].embed + video.id;
-                    var link = kcw_movies.links[videosrc].link + video.id;
 
                     DisplayVideo(embedlink, video.name);
-                    DisplayVideoDetails(video.name, video.views, video.created, link);
+                    DisplayVideoDetails(video.name, video.views, video.created, embedlink);
                     SetQueryParameters();
                     HidePlayButton();
                     break;
