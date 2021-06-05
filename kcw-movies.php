@@ -11,6 +11,7 @@
 defined( 'ABSPATH' ) or die('');
 
 include_once "api.php";
+include_once "ui-helpers.php";
 
 function kcw_movies_register_dependencies() {
     wp_register_style("kcw-movies", plugins_url("kcw-movies.css", __FILE__), null, "1.4.2");
@@ -23,19 +24,6 @@ function kcw_movies_enqueue_dependencies() {
     wp_enqueue_script("kcw-movies");
 }
 
-function kcw_movies_BuildListItem() {
-
-}
-
-//Build up the video display
-function kcw_movies_BuildVideoDisplay() {
-    
-}
-//Build up the list display
-function kcw_movies_BuildListDisplay() {
-
-}
-
 //The head of the movies wrapper
 function kcw_movies_StartBlock() {
     return "<div class='kcw-movies-container'>";
@@ -44,7 +32,7 @@ function kcw_movies_StartBlock() {
 function kcw_movies_EndBlock() {
     return "</div>";
 }
-//Return the formatting required for the movies page
+//Return the formatting required for the movies page **OLD FORMATTING** FOR REFRENCE ONLY
 function kcw_movies_GetHTML() {
     $html ="<div class='kcw-movies-wrapper'> 
                 <div class='kcw-movies-video' style='display: none;opacity: 0;'>
@@ -82,26 +70,26 @@ function kcw_movies_GetHTML() {
             </div>";
     return $html;
 }
-function kcw_movies_GetJSData() {
-    return "<script>var kcw_movies = " . kcw_movies_GetData() . "</script>";
-}
+
 //Init KCW movies
 function kcw_movies_Init() {
-    //Validate the movies cache
+    //Validate the movies cache (Delete old cache files)
     kcw_movies_ValidateCache();
-
     //Enqueue the script and stylesheets
     kcw_movies_enqueue_dependencies();
-
-    //Start the vimeo container
+    //Start the movies container
     $html = kcw_movies_StartBlock();
-    //Generate the nessesary javascript data 
-    $html .= kcw_movies_GetJSData();
-    //Add the nessesary html container elements
-    $html .= kcw_movies_GetHTML();
-    //End the vimeo container
+
+    //Add the video display (if applicable)
+    $html .= kcw_movies_ui_GetvideoHTML();
+    //Add the search display
+    $html .= kcw_movies_ui_GetSearchHTML();
+    //Add the list display
+    $html .= kcw_movies_ui_GetListDisplay();
+    
+    //End the movies container
     $html .= kcw_movies_EndBlock();
-    //Output the vimeo block on the page
+    //Output the movies block on the page
     echo $html;
 }
 add_shortcode("kcw-movies", 'kcw_movies_Init');

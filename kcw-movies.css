@@ -181,7 +181,7 @@ ul.kcw-movies-list li img {
 a.kcw-movies-thumb-wrapper {
     text-decoration: none;
     cursor: pointer;
-    opacity: 0;
+    opacity: 1;
 }
 
 p.kcw-movies-title {

@@ -31,20 +31,20 @@ function kcw_movies_api_Page($fulldata, $page, $per_page, $data_key) {
 
     $data["start"] = 0;
     $data["end"] = 0;
-    if ($page < 1) return $data;
+    if ($page < 1) $page = 1;
 
     $start = ($page - 1) * $per_page; $end = 0;
     if ($start >= $total) {
-        $start = $total;
-        $end = $start;
+        $start = (ceil($total/$per_page)-1) * $per_page;
+        $end = $total - 1;
     } else {
         $end = $start + $per_page;
         if ($end > $total)
             $end = $total;
         $end--;
-
-        for ($i = $start;$i <= $end;$i++) $data[$data_key][] = $fulldata[$i];
     }
+
+    for ($i = $start;$i <= $end;$i++) $data[$data_key][] = $fulldata[$i];
 
     $data["start"] = $start;
     $data["end"] = $end;
@@ -54,14 +54,14 @@ function kcw_movies_api_Page($fulldata, $page, $per_page, $data_key) {
 //Return the first page of the video list
 function kcw_movies_api_GetList() {
     $data = array();
-    $data["lpage"] = 1;
+    $data["vpage"] = 1;
     return kcw_movies_api_GetListPage($data);
 }
 //Return the given page of the video list
 function kcw_movies_api_GetListPage($data) {
     $list = kcw_movies_GetVideoCacheData();
-    $lpage = (int)$data["lpage"];
-    $list_page = kcw_movies_api_Page($list["data"], $lpage, 40, "items");
+    $vpage = (int)$data["vpage"];
+    $list_page = kcw_movies_api_Page($list["data"], $vpage, 40, "items");
     return kcw_movies_api_Success($list_page);
 }
 //Filter bad meaningless characters out of a search string
@@ -78,41 +78,46 @@ function kcw_movies_api_SearchMatches($search, $possible_match) {
 //Return any galleries matching the given search string
 function kcw_movies_Search($string) {
     $list = kcw_movies_GetVideoCacheData();
-    $filtered = kcw_movies_api_FilterString($string);
-    $search_list = array();
-    foreach ($list["data"] as $item) {
-        $name = kcw_movies_api_FilterString($item["name"]);
-        if (kcw_movies_api_SearchMatches($filtered, $name)) {
-            $search_list[] = $item;
-            continue;
+    if (isset($string) && strlen($string) > 0) {
+        var_dump($string);
+        $filtered = kcw_movies_api_FilterString($string);
+        $search_list = array();
+        foreach ($list["data"] as $item) {
+            $name = kcw_movies_api_FilterString($item["name"]);
+            if (kcw_movies_api_SearchMatches($filtered, $name)) {
+                $search_list[] = $item;
+                continue;
+            }
+            //Break up the current gallery name based on its spaces
+            //And check if the search string matches any of those
+            /*$name = explode(' ', $name);
+            $search_arr = explode(' ', $string);
+            //foreach ($search_arr as $search_part) {
+                foreach ($name as $part) {
+                    if (kcw_gallery_api_SearchMatches($string, $part)) {
+                        $search_list[] = $item;
+                        $fullbreak = true;
+                        break 1;
+                    }
+                }*/
+            //}
         }
-        //Break up the current gallery name based on its spaces
-        //And check if the search string matches any of those
-        /*$name = explode(' ', $name);
-        $search_arr = explode(' ', $string);
-        //foreach ($search_arr as $search_part) {
-            foreach ($name as $part) {
-                if (kcw_gallery_api_SearchMatches($string, $part)) {
-                    $search_list[] = $item;
-                    $fullbreak = true;
-                    break 1;
-                }
-            }*/
-        //}
+        return $search_list;
+    } else {
+        return $list;
     }
-    return $search_list;
 }
 //Return any galleries matching the given search string
 function kcw_movies_api_GetSearch($data) {
-    $data["lpage"] = 1;
+    $data["vpage"] = 1;
     return kcw_movies_api_GetSearchPage($data);
 }
 //Return any galleries matching the given search string
 function kcw_movies_api_GetSearchPage($data) {
-    $lpage = (int)$data["lpage"];
-    $list = kcw_movies_Search($data["lsearch"]);
-    $list_page = kcw_movies_api_Page($list, $lpage, 40, "items");
-    $list_page["search"] = ($data["lsearch"]);
+    $vpage = (int)$data["vpage"];
+    $list = kcw_movies_Search($data["vsearch"]);
+    $list_page = kcw_movies_api_Page($list, $vpage, 40, "items");
+    $list_page["search"] = ($data["vsearch"]);
     return kcw_movies_api_Success($list_page);
 }
 //Register API routes
@@ -125,7 +130,7 @@ function kcw_movies_api_RegisterRestRoutes() {
         'callback' => 'kcw_movies_api_GetList',
     ));
     //Route for /list/page
-    register_rest_route( "$kcw_movies_api_namespace/v1", '/list/(?P<lpage>\d+)', array(
+    register_rest_route( "$kcw_movies_api_namespace/v1", '/list/(?P<vpage>\d+)', array(
         'methods' => 'GET',
         'callback' => 'kcw_movies_api_GetListPage',
     ));
@@ -137,12 +142,12 @@ function kcw_movies_api_RegisterRestRoutes() {
     ));
 
     //Route for /search/search-string
-    register_rest_route( "$kcw_movies_api_namespace/v1", '/search/(?P<lsearch>[^/]+)', array(
+    register_rest_route( "$kcw_movies_api_namespace/v1", '/search/(?P<vsearch>[^/]+)', array(
         'methods' => 'GET',
         'callback' => 'kcw_movies_api_GetSearch',
     ));
     //Route for /search/search-string/page
-    register_rest_route( "$kcw_movies_api_namespace/v1", '/search/(?P<lsearch>[^/]+)/(?P<lpage>\d+)', array(
+    register_rest_route( "$kcw_movies_api_namespace/v1", '/search/(?P<vsearch>[^/]+)/(?P<vpage>\d+)', array(
         'methods' => 'GET',
         'callback' => 'kcw_movies_api_GetSearchPage',
     ));
