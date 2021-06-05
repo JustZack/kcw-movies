@@ -99,7 +99,7 @@ function kcw_movies_ui_BuildListItem($video) {
 }
 //Build up the list display (using search and video page in $_GET)
 function kcw_movies_ui_GetListDisplay() {
-    $page = $_GET["vpage"]; $search = $_GET["vsearch"];
+    $page = (int)$_GET["vpage"]; $search = $_GET["vsearch"];
     if (!isset($page)) $page = 1;
 
     //Get the data we want via the API
@@ -114,7 +114,9 @@ function kcw_movies_ui_GetListDisplay() {
     $js_data["links"] = $vlist["links"];
     $js_data["total"] = $vlist["total"];
     $js_data["per_page"] = $vlist["per_page"];
-    $js_data["pages"] = array();
+    $js_data["pages"] = array();    
+    for ($i = 0;$i < $page;$i++) $js_data["pages"][$i] = [];
+
     $js_data["pages"][(int)$page] = $vlist["items"];
     $list_html = kcw_movies_ui_GetJSData(json_encode($js_data));
 

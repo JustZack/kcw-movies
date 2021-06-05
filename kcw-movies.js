@@ -345,8 +345,11 @@ jQuery(document).ready(function(){
     function DoVideoDisplay(videoid, videosrc) {
         currentvideo = videoid;
         currentsrc = videosrc;
+        //For each page
         for (var i = 0;i < kcw_movies.pages.length;i++) {
+            //for each video
             for (var j = 0;j < kcw_movies.pages[i].length;j++) {
+                //If it matches the id and source, display it
                 if (kcw_movies.pages[i][j].id == videoid && kcw_movies.pages[i][j].src == videosrc) {
                     var video = kcw_movies.pages[i][j];
                     var embedlink = kcw_movies.links[videosrc].embed + video.id;
