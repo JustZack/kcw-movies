@@ -176,14 +176,16 @@ jQuery(document).ready(function(){
             kcw_movies.pages = [];
             ShowListPage(0);
         } else {
-            //jQuery("div.kcw-gallery-list-container").css({display: "block"});
-            //ShowLoadingGif(null);
+            ShowLoadingGif();
 
             if (kcw_movies.pages == undefined || kcw_movies.pages[0] == undefined || kcw_movies.search != search) {
                 kcw_movies.search = search;
                 ApiCall("search", "/"+FilterSearch(search), function(data) {
                     kcw_movies.pages = [];
                     kcw_movies.search = data.search;
+                    if (data.items.length == 0) {
+                        NoSearchResults();
+                    }
                     ShowListPage_callback(data, 1)
                 });
             } else {
@@ -368,22 +370,25 @@ jQuery(document).ready(function(){
         var url = api_url + endpoint + paremeter_string;
         console.log("REQUEST: " + url);
         if (current_request != null) current_request.abort();
+        //Ensure the list view is reset incase the previous requiest hid the list
+        ResetListView();
         current_request = jQuery.get(url, then).done(function() {
         }).fail(function() {
             FailedRequest(endpoint);
         }).always(function() {
-
         });
     }
 
     function FailedRequest(endpoint) {
         //Search API error
         if (endpoint.indexOf("search") > -1) {
-            NoSearchResults();
+            ApiRequestFailed(`Couldn't reach our server to search for '${kcw_movies.search}'. Please try refreshing or come back later.`);
         } 
         //List API error
         else if (endpoint.indexOf("list") > -1) {
+            ApiRequestFailed(`Couldn't reach our server to get that page. Please try refreshing or come back later.`);
         } 
+        
 
         console.log("Request Failed");
     }
@@ -393,6 +398,20 @@ jQuery(document).ready(function(){
         jQuery("h3.kcw-movies-list-message").css({display: "block"});
         jQuery("ul.kcw-movies-pagination").css({display: "none"});
         jQuery("ul.kcw-movies-list").css({display: "none"});
+    }
+
+    function ApiRequestFailed(message) {
+        jQuery("h3.kcw-movies-list-message").text(message);
+        jQuery("h3.kcw-movies-list-message").css({display: "block"});
+        jQuery("ul.kcw-movies-pagination").css({display: "none"});
+        jQuery("ul.kcw-movies-list").css({display: "none"});
+    }
+
+    function ResetListView() {
+        jQuery("h3.kcw-movies-list-message").text("");
+        jQuery("h3.kcw-movies-list-message").css({display: "none"});
+        jQuery("ul.kcw-movies-pagination").css({display: "block"});
+        jQuery("ul.kcw-movies-list").css({display: "block"});
     }
 
     var isLoading = false;
