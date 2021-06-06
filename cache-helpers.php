@@ -14,6 +14,10 @@ function kcw_movies_GetCacheFile($type) {
 function kcw_movies_GetCacheData($cachefilename) {
     return file_get_contents($cachefilename);
 }
+//Return cache data as json given the filename
+function kcw_movies_GetCacheDataJSON($cachefilename) {
+    return  json_decode(kcw_movies_GetCacheData($cachefilename), true);
+}
 //Cache the given data to the specified cache type
 function kcw_movies_Cache($file, $data) {
     //Ensure the cache directory exists
@@ -43,9 +47,7 @@ function kcw_movies_ValidateCache() {
 
     if (!file_exists($file)) {
         //Vimeo cache is never invalidated or checked, 0 is the sentinel value describing that
-        $status["vimeo"] = 0;
-        $status["uploads"] = $nextweek;
-        $status["youtube"] = $tommorrow;
+        $status = array("vimeo" => 0, "uploads" => $nextweek, "youtube", $tommorrow);
         kcw_movies_Cache($file, $status);
     } else {
         $status = json_decode(kcw_movies_GetCacheData($file), true);
@@ -53,17 +55,22 @@ function kcw_movies_ValidateCache() {
 
     //Delete out of date caches, and update the cache time
     $caches = array("youtube"=> $tommorrow, "uploads"=> $nextweek);
-    $changed = false;
+    $deleted = false;
     foreach ($caches as $str => $newtime) {
         if ($status[$str] < $now) {
             kcw_movies_DeleteCache($str);
             $status[$str] = $newtime;
-            $changed = true;
+            $deleted = true;
         }
     }
 
-    //Only update the cache if any of the cache was invalidated
-    if ($changed) kcw_movies_Cache($file, $status);
+    //If any cache file was deleted
+    if ($deleted) { 
+        //Update the status file
+        kcw_movies_Cache($file, $status);
+        //Delete the 'total' cache
+        kcw_movies_DeleteCache("movies");
+    }
 }
 
 ?>
