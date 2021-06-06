@@ -47,9 +47,7 @@ function kcw_movies_ValidateCache() {
 
     if (!file_exists($file)) {
         //Vimeo cache is never invalidated or checked, 0 is the sentinel value describing that
-        $status["vimeo"] = 0;
-        $status["uploads"] = $nextweek;
-        $status["youtube"] = $tommorrow;
+        $status = array("vimeo" => 0, "uploads" => $nextweek, "youtube", $tommorrow);
         kcw_movies_Cache($file, $status);
     } else {
         $status = json_decode(kcw_movies_GetCacheData($file), true);

@@ -4,6 +4,13 @@ include_once "cache-helpers.php";
 include_once "vimeo-helpers.php";
 include_once "youtube-helpers.php";
 
+function kcw_movies_SortingSwap($array, $i, $j) {
+    $tmp = $array[$i];
+    $array[$i] = $array[$j];
+    $array[$j] = $tmp;
+    return $array;
+}
+
 function kcw_movies_OrderArrayByKeyAsc($array, $key) {
     //Selection sort
     for ($i = 0;$i < count($array) - 1;$i++) {
@@ -18,11 +25,7 @@ function kcw_movies_OrderArrayByKeyAsc($array, $key) {
 
         }
         //Swap
-        if ($minj != $i) {
-            $tmp = $array[$i];
-            $array[$i] = $array[$minj];
-            $array[$minj] = $tmp;
-        }
+        if ($minj != $i) $array = kcw_movies_SortingSwap($array, $i, $minj);
     }
     return $array;
 }

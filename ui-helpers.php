@@ -3,7 +3,7 @@
 //include_once "api.php";
 
 //Return the html format of the video display
-function kcw_moives_ui_VideoDisplayHTMl() {
+function kcw_movies_ui_VideoDisplayHTML() {
     $video_html = "
     <div class='kcw-movies-video' style='display: %s;opacity: %s;'>
         <iframe title='%s' src='%s' allow='autoplay; picture-in-picture' allowfullscreen='true' frameborder='0'></iframe>
@@ -21,28 +21,33 @@ function kcw_moives_ui_VideoDisplayHTMl() {
     </div>";
     return $video_html;
 }
+
+function kcw_movies_ui_GetViewHTMLEmpty() {
+    return sprintf(kcw_movies_ui_VideoDisplayHTML(), "none", 0, "", "", "" , "", "", "", "");
+}
+
+function kcw_movies_ui_GetViewHTMLFormated($video, $link) {
+    $video_html = kcw_movies_ui_VideoDisplayHTML();
+
+    $v_src = $link;
+    $v_title = $video["name"];
+    $v_views = $video["views"];
+    $v_published = $video["created"];
+
+    return sprintf($video_html, "block", 1, $v_title, $v_src, $v_title, $v_views, $v_published, $v_src);
+}
 //Build up the video display (using video data in $_GET)
 function kcw_movies_ui_GetVideoHTML() {
     $list = kcw_movies_GetVideoCacheData();
     $id = $_GET["v"];
     $src = $_GET["vsrc"];
 
-    $video_html = kcw_moives_ui_VideoDisplayHTMl();
+    if (isset($id) && isset($src) && strlen($id) > 0 && strlen($src) > 0)
+        foreach ($list["data"] as $video)
+            if ($video["id"] == $id && $video["src"] == $src)
+                return kcw_movies_ui_GetViewHTMLFormated($video, $list["links"][$src]["embed"] . $id);
 
-    if (isset($id) && isset($src) && strlen($id) > 0 && strlen($src) > 0) {
-        foreach ($list["data"] as $video) {
-            if ($video["id"] == $id && $video["src"] == $src) {
-                $v_src = $list["links"][$src]["embed"] . $id;
-                $v_title = $video["name"];
-                $v_views = $video["views"];
-                $v_published = $video["created"];
-
-                return sprintf($video_html, "block", 1, $v_title, $v_src, $v_title, $v_views, $v_published, $v_src);
-            }
-        }
-    }
-
-    return sprintf($video_html, "none", 0, "", "", "" , "", "", "", "");
+    return kcw_movies_ui_GetViewHTMLEmpty();
 }
 
 //Search html (with search in $_GET)
