@@ -32,44 +32,6 @@ function kcw_movies_StartBlock() {
 function kcw_movies_EndBlock() {
     return "</div>";
 }
-//Return the formatting required for the movies page **OLD FORMATTING** FOR REFRENCE ONLY
-function kcw_movies_GetHTML() {
-    $html ="<div class='kcw-movies-wrapper'> 
-                <div class='kcw-movies-video' style='display: none;opacity: 0;'>
-                    <iframe title='' src='' allow='autoplay; picture-in-picture' allowfullscreen='true' frameborder='0'>
-                    </iframe>
-                    <div class='kcw-movies-video-info'> 
-                        <h3 class='kcw-movies-video-title'></h3>
-                        <p class='kcw-movies-video-views'></p>
-                        <p class='kcw-movies-video-separator'>-</p>
-                        <p class='kcw-movies-video-created'></p>
-                        <a class='kcw-movies-copy-embed'>
-                            <span class='dashicons dashicons-shortcode'></span><h4>Embed</h4>
-                            <input type='text' value='' class='kcw-movies-link'>
-                        </a>
-                        <div class='kcw-movies-copy-embed-message' style='position:absolute; left: -9999px;'>Copied!</div>
-                    </div>
-                </div>
-                <div class='kcw-movies-search'>
-                    <input type='text' aria-label='search' name='kcw-movies-search' placeholder='Search'>
-                    <span class='dashicons dashicons-search'></span>
-                </div>
-                <div class='kcw-movies-list-wrapper'>
-                    <div class='kcw-movies-pagination-wrapper'>
-                        <ul class='kcw-movies-pagination pagination-top'></ul>
-                    </div>
-                    <center>
-                        <h3 class='kcw-movies-list-message'></h3>
-                        <ul class='kcw-movies-list'></ul>
-                    </center>
-                    <div class='kcw-movies-pagination-wrapper'>
-                        <ul class='kcw-movies-pagination pagination-bottom'></ul>
-                    </div>
-                </div>
-                <div class='kcw-movies-playbutton'><div class='kcw-movies-triangle'></div>
-            </div>";
-    return $html;
-}
 
 //Init KCW movies
 function kcw_movies_Init() {
