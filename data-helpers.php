@@ -11,19 +11,23 @@ function kcw_movies_SortingSwap($array, $i, $j) {
     return $array;
 }
 
+function kcw_movies_SortingMinj($i, $array, $key, $minkey) {
+    $minj = $i;
+    for ($j = $i + 1;$j < count($array);$j++) {
+        $curkey = strtotime($array[$j][$key]);
+        if ($curkey > $minkey) {
+            $minj = $j;
+            $minkey = $curkey;
+        }
+    }
+    return $minj;
+}
+
 function kcw_movies_OrderArrayByKeyAsc($array, $key) {
     //Selection sort
     for ($i = 0;$i < count($array) - 1;$i++) {
         $minkey = strtotime($array[$i][$key]);
-        $minj = $i;
-        for ($j = $i + 1;$j < count($array);$j++) {
-            $curkey = strtotime($array[$j][$key]);
-            if ($curkey > $minkey) {
-                $minj = $j;
-                $minkey = $curkey;
-            }
-
-        }
+        $minj = kcw_movies_SortingMinj($i, $array, $key, $minkey);
         //Swap
         if ($minj != $i) $array = kcw_movies_SortingSwap($array, $i, $minj);
     }

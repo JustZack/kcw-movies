@@ -20,37 +20,27 @@ function kcw_movies_api_Success($data) {
 }
 //Return a page of the given data
 function kcw_movies_api_Page($fulldata, $page, $per_page, $data_key) {
-    $data = array();
-
     $total = count($fulldata);
-    $data["total"] = $total;
-    $data["page"] = $page;
-    $data["per_page"] = $per_page;
-
-    $data[$data_key] = array();
-
-    $data["start"] = 0;
-    $data["end"] = 0;
     if ($page < 1) $page = 1;
+
+    $data = array();
+    $data["total"] = $total; $data["page"] = $page; $data["per_page"] = $per_page; 
+    $data[$data_key] = array();
 
     $start = ($page - 1) * $per_page; $end = 0;
     if ($start >= $total) {
         $start = (ceil($total/$per_page)-1) * $per_page;
         $end = $total - 1;
     } else {
-        $end = $start + $per_page;
-        if ($end > $total)
-            $end = $total;
-        $end--;
+        $end = $start + $per_page - 1;
+        if ($end > $total) $end = $total - 1;
     }
 
     if ($total > 0)
         for ($i = $start;$i <= $end;$i++) 
             $data[$data_key][] = $fulldata[$i];
 
-    $data["start"] = $start;
-    $data["end"] = $end;
-
+    $data["start"] = $start; $data["end"] = $end;
     return $data;
 }
 //Return the first page of the video list
@@ -84,30 +74,12 @@ function kcw_movies_Search($string) {
     if (isset($string) && strlen($string) > 0) {
         $filtered = kcw_movies_api_FilterString($string);
         $search_list = array();
-        foreach ($list["data"] as $item) {
-            $name = kcw_movies_api_FilterString($item["name"]);
-            if (kcw_movies_api_SearchMatches($filtered, $name)) {
+        foreach ($list["data"] as $item)
+            if (kcw_movies_api_SearchMatches($filtered, kcw_movies_api_FilterString($item["name"])))
                 $search_list[] = $item;
-                continue;
-            }
-            //Break up the current gallery name based on its spaces
-            //And check if the search string matches any of those
-            /*$name = explode(' ', $name);
-            $search_arr = explode(' ', $string);
-            //foreach ($search_arr as $search_part) {
-                foreach ($name as $part) {
-                    if (kcw_gallery_api_SearchMatches($string, $part)) {
-                        $search_list[] = $item;
-                        $fullbreak = true;
-                        break 1;
-                    }
-                }*/
-            //}
-        }
-        return $search_list;
-    } else {
-        return $list;
+        $list = $search_list;
     }
+    return $list;
 }
 //Return any galleries matching the given search string
 function kcw_movies_api_GetSearch($data) {
