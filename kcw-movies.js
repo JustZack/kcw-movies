@@ -164,9 +164,9 @@ jQuery(document).ready(function(){
     //Filter search string
     function FilterSearch(search) {
         search = search.replace(' ', '+');
-        search = search.replace('/', '');
-        search = search.replace('\\', '');
-        search = search.replace('/[^A-Za-z0-9]+/g', '');
+        search = search.replace('/', ' ');
+        search = search.replace('\\', ' ');
+        search = search.replace('/[^A-Za-z0-9\s]+/g', '');
         return search;
     }
     //Perform the search.
@@ -183,6 +183,7 @@ jQuery(document).ready(function(){
                 kcw_movies.search = search;
                 ApiCall("search", "/"+FilterSearch(search), function(data) {
                     kcw_movies.pages = [];
+                    kcw_movies.search = data.search;
                     ShowListPage_callback(data, 1)
                 });
             } else {
@@ -250,6 +251,7 @@ jQuery(document).ready(function(){
                 });
             } else {
                 ApiCall("list", "/"+page, function(data) { 
+                    kcw_movies.search = "";
                     ShowListPage_callback(data, page)
                 });
             }
@@ -274,10 +276,18 @@ jQuery(document).ready(function(){
 
     function BuildVideoThumbnail(video) {
         var thumb = `<a class='kcw-movies-thumb-wrapper' data-src='${video.src}' data-id='${video.id}' title='${video.name}'>`;
-        thumb += `<img class='kcw-movies-thumb' src='${video.thumb}' alt='${video.name}' width='320', height='180'>`;
+        thumb += `<img class='kcw-movies-thumb' src='${video.thumb}' alt='${FilterName(video.name)}' width='320', height='180'>`;
         thumb += `<p class='kcw-movies-title'>${video.name}</p>`;
         thumb += `<div class='kcw-movies-length'><pre class='kcw-movies-length'>${video.length}</pre></div>`;
         return thumb;
+    }
+
+    //Filter search string
+    function FilterName(name) {
+        name = name.replace("/[`]/g", '');
+        name = name.replace(`/[']/g`, '');
+        name = name.replace('/["]/g;', ' ');
+        return name;
     }
 
     /*
