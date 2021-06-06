@@ -44,7 +44,9 @@ function kcw_movies_api_Page($fulldata, $page, $per_page, $data_key) {
         $end--;
     }
 
-    for ($i = $start;$i <= $end;$i++) $data[$data_key][] = $fulldata[$i];
+    if ($total > 0)
+        for ($i = $start;$i <= $end;$i++) 
+            $data[$data_key][] = $fulldata[$i];
 
     $data["start"] = $start;
     $data["end"] = $end;
@@ -80,7 +82,6 @@ function kcw_movies_api_SearchMatches($search, $possible_match) {
 function kcw_movies_Search($string) {
     $list = kcw_movies_GetVideoCacheData();
     if (isset($string) && strlen($string) > 0) {
-        var_dump($string);
         $filtered = kcw_movies_api_FilterString($string);
         $search_list = array();
         foreach ($list["data"] as $item) {

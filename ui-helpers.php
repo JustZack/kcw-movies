@@ -113,6 +113,7 @@ function kcw_movies_ui_GetListDisplay() {
     global $kcw_movies_api_url;
     $js_data = array();
     $js_data["api_url"] = $kcw_movies_api_url;
+    $js_data["search"] = "";
     $js_data["links"] = $vlist["links"];
     $js_data["total"] = $vlist["total"];
     $js_data["per_page"] = $vlist["per_page"];
