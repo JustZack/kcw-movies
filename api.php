@@ -79,11 +79,15 @@ function kcw_movies_api_SearchMatches($search, $possible_match) {
         //Any part of the search OR possible match are similar
         $search_parts = explode(" ", $search);
         $match_parts = explode(" ", $possible_match);
+        //Keep track of matches
+        $total_matches = 0;
+        //Interate over all parts
         foreach ($search_parts as $spart)
             foreach ($match_parts as $mpart)
-                if (kcw_movies_api_StringsMatch($spart, $mpart))
-                    return true;
-        return false;
+                if (kcw_movies_api_StringsMatch($spart, $mpart)) 
+                    $total_matches++;
+        //If there is a >= 1/3 match then the strings match
+        return ($total_matches / (1.0*count($search_parts)) >= .333);
     }
 }
 //Return any galleries matching the given search string
