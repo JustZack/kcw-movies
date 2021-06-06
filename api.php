@@ -66,9 +66,20 @@ function kcw_movies_api_FilterString($search) {
 }
 
 function kcw_movies_api_StringsMatch($a, $b) {
-    if (strlen($a) == 0 && strlen($b) == 0) return true;
-    else if (strlen($a) == 0 xor strlen($b) == 0) return false;
+    if (!strlen($a) && !strlen($b)) return true;
+    else if (!strlen($a) xor !strlen($b)) return false;
     return strpos($a, $b) > -1 || strpos($b, $a) > -1;
+}
+function kcw_movies_api_ComputeLikeness($arraya, $arrayb) {
+    //Keep track of matches
+    $total_matches = 0;
+    //Iterate over all parts
+    foreach ($arraya as $apart)
+        foreach ($arrayb as $bpart)
+            if (kcw_movies_api_StringsMatch($apart, $bpart)) 
+                $total_matches++;
+
+    return $total_matches / (1.0*count($arraya));
 }
 //Check if either the search or possible match are similar
 function kcw_movies_api_SearchMatches($search, $possible_match) {
@@ -76,18 +87,10 @@ function kcw_movies_api_SearchMatches($search, $possible_match) {
     if (kcw_movies_api_StringsMatch($search, $possible_match)) {
         return true;
     } else {
-        //Any part of the search OR possible match are similar
-        $search_parts = explode(" ", $search);
-        $match_parts = explode(" ", $possible_match);
-        //Keep track of matches
-        $total_matches = 0;
-        //Interate over all parts
-        foreach ($search_parts as $spart)
-            foreach ($match_parts as $mpart)
-                if (kcw_movies_api_StringsMatch($spart, $mpart)) 
-                    $total_matches++;
-        //If there is a >= 1/3 match then the strings match
-        return ($total_matches / (1.0*count($search_parts)) >= .333);
+        //Compute the likeness of the two arrays
+        $likness = kcw_movies_api_ComputeLikeness(explode(" ", $search), explode(" ", $possible_match));
+        //Arrays must have atleast %33 similarity
+        return $likness >= .333;
     }
 }
 //Return any galleries matching the given search string
