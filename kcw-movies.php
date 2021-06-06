@@ -2,7 +2,7 @@
 /*
 * Plugin Name:       KCW Movies
 * Description:       Provide an aggregated home for all KCW video content
-* Version:           1.4.0
+* Version:           1.5.0
 * Requires at least: 5.2
 * Requires PHP:      7.2
 * Author:            Zack Jones
@@ -14,8 +14,8 @@ include_once "api.php";
 include_once "ui-helpers.php";
 
 function kcw_movies_register_dependencies() {
-    wp_register_style("kcw-movies", plugins_url("kcw-movies.css", __FILE__), null, "1.4.2");
-    wp_register_script("kcw-movies", plugins_url("kcw-movies.js", __FILE__), array('jquery'), "1.4.2");
+    wp_register_style("kcw-movies", plugins_url("kcw-movies.css", __FILE__), null, "1.5.0");
+    wp_register_script("kcw-movies", plugins_url("kcw-movies.js", __FILE__), array('jquery'), "1.5.0");
 }
 add_action("wp_enqueue_scripts", "kcw_movies_register_dependencies");
 
