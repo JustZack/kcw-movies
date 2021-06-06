@@ -219,13 +219,15 @@ jQuery(document).ready(function(){
 
     //Handle page changes from the user
     jQuery("ul.kcw-movies-pagination").on("click touchstart", "li a",function() {
-        var page = jQuery(this).parent().data("page");
-        var current = jQuery("ul.kcw-movies-pagination li a.current_page").parent().data("page");
-            
-        if (page != current) ShowListPage(page);
+        if (!isLoading) {
+            var page = jQuery(this).parent().data("page");
+            var current = jQuery("ul.kcw-movies-pagination li a.current_page").parent().data("page");
+                
+            if (page != current) ShowListPage(page);
 
-        var offset = jQuery("ul.kcw-movies-list").offset().top - 150;
-        jQuery("html, body").animate({scrollTop: offset}, 400);
+            var offset = jQuery("ul.kcw-movies-list").offset().top - 150;
+            jQuery("html, body").animate({scrollTop: offset}, 400);
+        }
     });
 
     function ShowListPage_callback(data, page) {
@@ -238,6 +240,7 @@ jQuery(document).ready(function(){
     }
 
     function ShowListPage(page) {
+        ShowLoadingGif();
         //Check if the page is cached
         if (page > kcw_movies.pages.length || kcw_movies.pages[page-1] == undefined || kcw_movies.pages[page-1].length == 0) {
             if (page < 1) page = 1;
@@ -266,6 +269,7 @@ jQuery(document).ready(function(){
             jQuery("ul.kcw-movies-list").append($li);
         }
         DisplayPagingLinks(kcw_movies.total, kcw_movies.per_page, page-1);
+        HideLoadingGif();
     }
 
     function BuildVideoThumbnail(video) {
@@ -382,15 +386,14 @@ jQuery(document).ready(function(){
     }
 
     var isLoading = false;
-    var loadingTimeout = null;
     //Display the loading gif on the given element
-    function ShowLoadingGif(callback) {
+    function ShowLoadingGif() {
         isLoading = true;
 
         var pos = {};
         
-        var lw = jQuery("div.kcw-gallery-loading-wrapper").outerWidth();
-        var lh = jQuery("div.kcw-gallery-loading-wrapper").outerHeight();
+        var lw = jQuery("div.kcw-movies-loading-wrapper").outerWidth();
+        var lh = jQuery("div.kcw-movies-loading-wrapper").outerHeight();
 
         pos.top = jQuery(window).height() / 2;
         pos.top -= lh/2;
@@ -398,25 +401,16 @@ jQuery(document).ready(function(){
         pos.left = jQuery(window).width() / 2;
         pos.left -= lw/2;
 
-        jQuery("div.kcw-gallery-loading-wrapper").css({top: pos.top, left: pos.left});
-        jQuery("div.kcw-gallery-loading-wrapper").animate({opacity: 1});
-
-        if (callback != null) {
-            loadingTimeout = setTimeout(function(){
-                callback();
-            }, 3000);
-        }
+        jQuery("div.kcw-movies-loading-wrapper").css({top: pos.top, left: pos.left});
+        jQuery("div.kcw-movies-loading-wrapper").animate({opacity: 1});
     }
     //Hide the loading gif
     function HideLoadingGif(){
-        //Stop any loading timeouts from firing
-        clearTimeout(loadingTimeout);
-
         isLoading = false;
-        jQuery("div.kcw-gallery-loading-wrapper").animate({opacity: 0}, function() {
+        jQuery("div.kcw-movies-loading-wrapper").animate({opacity: 0}, function() {
             jQuery(this).css({top: "-999px", left: "-999px"});
-            jQuery("p.kcw-gallery-loading-status").text("");
-            jQuery("p.kcw-gallery-loading-status").css({display: "none", opacity: 0});
+            jQuery("p.kcw-movies-loading-status").text("");
+            jQuery("p.kcw-movies-loading-status").css({display: "none", opacity: 0});
         });
     }
 

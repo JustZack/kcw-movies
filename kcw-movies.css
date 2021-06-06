@@ -294,6 +294,27 @@ div.kcw-movies-length pre {
     border-radius: 2.5px;
 }
 
+div.kcw-movies-loading-wrapper {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 25px;
+    position: fixed;
+}
+
+div.kcw-movies-loading-wrapper img {
+    padding: 5px;
+}
+
+p.kcw-movies-loading-status {
+    font-size: 17px;
+    font-style: italic;
+    letter-spacing: -1px;
+    opacity: 0;
+    display: none;
+    margin: 0px;
+}
+
 @media only screen and (max-aspect-ratio: 4/3) {
     div.kcw-movies-video iframe {
         width: 100%;

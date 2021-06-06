@@ -48,7 +48,8 @@ function kcw_movies_Init() {
     $html .= kcw_movies_ui_GetSearchHTML();
     //Add the list display
     $html .= kcw_movies_ui_GetListDisplay();
-    
+    //Add the loading gif wrapper
+    $html .= kcw_movies_ui_GetLoadingBox();
     //End the movies container
     $html .= kcw_movies_EndBlock();
     //Output the movies block on the page

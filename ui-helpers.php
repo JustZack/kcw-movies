@@ -132,4 +132,14 @@ function kcw_movies_ui_GetListDisplay() {
 
 }
 
+function kcw_movies_ui_GetLoadingBox() {
+    $url = plugins_url("loading.gif", __FILE__);
+    $html = "<div class='kcw-movies-loading-wrapper' style='top: -999px;left: -999px;opacity: 0'>";
+    $html .= "<img src='%s' class='kcw-movies-loading'>";
+    $html .= "<center><p class='kcw-movies-loading-status'></p></center>";
+    $html .= "</div>";
+
+    return sprintf($html, $url);
+}
+
 ?>
