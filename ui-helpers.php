@@ -109,7 +109,7 @@ function kcw_movies_ui_BuildListItem($video) {
 //Build up the list display (using search and video page in $_GET)
 function kcw_movies_ui_GetListDisplay() {
     $page = (int)$_GET["vpage"]; $search = $_GET["vsearch"];
-    if (!isset($page)) $page = 1;
+    if (!isset($page) || $page < 1) $page = 1;
 
     //Get the data we want via the API
     $data = array(); 
