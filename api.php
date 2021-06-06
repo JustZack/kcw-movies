@@ -118,7 +118,7 @@ function kcw_movies_api_GetSearchPage($data) {
     $list = kcw_movies_api_Search($data["vsearch"]);
     $list_page = kcw_movies_api_Page($list["data"], $vpage, 40, "items");
     $list_page["links"] = $list["links"];
-    $list_page["search"] = kcw_movies_api_FilterString($data["vsearch"]);
+    $list_page["search"] = $data["vsearch"];
     return kcw_movies_api_Success($list_page);
 }
 //Register API routes
