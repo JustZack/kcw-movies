@@ -64,34 +64,35 @@ function kcw_movies_api_FilterString($search) {
     $search = strtolower($search);
     return $search;
 }
-
+//Check if two strings contain eachother
 function kcw_movies_api_StringsMatch($a, $b) {
+    //Both zero length = match
     if (!strlen($a) && !strlen($b)) return true;
+    //Exactly one zero length = no match
     else if (!strlen($a) xor !strlen($b)) return false;
+    //Either one contains the other = match
     return strpos($a, $b) > -1 || strpos($b, $a) > -1;
 }
-function kcw_movies_api_ComputeLikeness($arraya, $arrayb) {
+//Compute how similar the search array is to the possible match array
+function kcw_movies_api_ComputeLikeness($search, $possible_match) {
+    //Convert string to array of strings
+    $search = explode(" ", $search); $possible_match = explode(" ", $possible_match);
     //Keep track of matches
     $total_matches = 0;
-    //Iterate over all parts
-    foreach ($arraya as $apart)
-        foreach ($arrayb as $bpart)
-            if (kcw_movies_api_StringsMatch($apart, $bpart)) 
-                $total_matches++;
-
-    return $total_matches / (1.0*count($arraya));
+    //Iterate over all parts and track likeness
+    foreach ($search as $spart)
+        foreach ($possible_match as $pmpart)
+            if (kcw_movies_api_StringsMatch($spart, $pmpart)) 
+                { $total_matches++; break; }
+    //Return # of matches / # of search words
+    return $total_matches / (1.0*count($search));
 }
 //Check if either the search or possible match are similar
 function kcw_movies_api_SearchMatches($search, $possible_match) {
     //Search contains video title OR Video title contains search 
-    if (kcw_movies_api_StringsMatch($search, $possible_match)) {
-        return true;
-    } else {
-        //Compute the likeness of the two arrays
-        $likness = kcw_movies_api_ComputeLikeness(explode(" ", $search), explode(" ", $possible_match));
-        //Arrays must have atleast %33 similarity
-        return $likness >= .333;
-    }
+    if (kcw_movies_api_StringsMatch($search, $possible_match)) return true;
+    //compare likeness of the two arrays and ensure it is >= 33.3%
+    else return kcw_movies_api_ComputeLikeness($search, $possible_match) >= .333;
 }
 //Return any galleries matching the given search string
 function kcw_movies_api_Search($string) {
