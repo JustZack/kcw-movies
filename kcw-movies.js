@@ -3,14 +3,9 @@ jQuery(document).ready(function(){
         The various variables keeping track of the application
         TODO: Put these in the data object passed from the server
     */
-    var perpage = 28;
     var currentvideo = null;
     var currentsrc = null;
     var currentpage = 1;
-    var currentsearch = "";
-
-    var searchSet = null;
-    var lastSearch = 0;
 
     /*
         Functions dealing with showing the play button on thumbnails
@@ -220,11 +215,6 @@ jQuery(document).ready(function(){
             $li.append($link);
             jQuery("ul.kcw-movies-pagination").append($li);
         }
-    }
-
-    //Remove all non alphanumeric characters from a string to simplify it
-    function removeSpecial(str) {
-        return str.replace(/[^\w\s]/gi, '').trim().toLowerCase();
     }
 
     //Handle page changes from the user
