@@ -94,7 +94,7 @@ function kcw_movies_api_SearchMatches($search, $possible_match) {
     }
 }
 //Return any galleries matching the given search string
-function kcw_movies_Search($string) {
+function kcw_movies_api_Search($string) {
     $list = kcw_movies_GetVideoCacheData();
     if (isset($string) && strlen($string) > 0) {
         $filtered = kcw_movies_api_FilterString($string);
@@ -114,7 +114,7 @@ function kcw_movies_api_GetSearch($data) {
 //Return any galleries matching the given search string
 function kcw_movies_api_GetSearchPage($data) {
     $vpage = (int)$data["vpage"];
-    $list = kcw_movies_Search($data["vsearch"]);
+    $list = kcw_movies_api_Search($data["vsearch"]);
     $list_page = kcw_movies_api_Page($list["data"], $vpage, 40, "items");
     $list_page["links"] = $list["links"];
     $list_page["search"] = kcw_movies_api_FilterString($data["vsearch"]);
