@@ -37,7 +37,7 @@ function kcw_movies_ui_GetViewHTMLFormated($video, $link) {
     return sprintf($video_html, "block", 1, $v_title, $v_src, $v_title, $v_views, $v_published, $v_src);
 }
 
-function kcw_movies_us_GetViewHTMLPopulated($list, $id, $src) {
+function kcw_movies_ui_GetViewHTMLPopulated($list, $id, $src) {
     foreach ($list["data"] as $video)
         if ($video["id"] == $id && $video["src"] == $src)
             return kcw_movies_ui_GetViewHTMLFormated($video, $list["links"][$src]["embed"] . $id);
@@ -49,9 +49,9 @@ function kcw_movies_ui_GetVideoHTML() {
     $src = $_GET["vsrc"];
 
     if (isset($id) && isset($src) && strlen($id) > 0 && strlen($src) > 0)
-        return kcw_movies_us_GetViewHTMLPopulated($list, $id, $src);
+        return kcw_movies_ui_GetViewHTMLPopulated($list, $id, $src);
 
-        return kcw_movies_ui_GetViewHTMLEmpty();
+    return kcw_movies_ui_GetViewHTMLEmpty();
 }
 
 //Search html (with search in $_GET)
