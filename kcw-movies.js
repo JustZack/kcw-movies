@@ -164,9 +164,9 @@ jQuery(document).ready(function(){
     //Filter search string
     function FilterSearch(search) {
         search = search.replace(' ', '+');
-        search = search.replace('/', '');
-        search = search.replace('\\', '');
-        search = search.replace('/[^A-Za-z0-9]+/g', '');
+        search = search.replace('/', ' ');
+        search = search.replace('\\', ' ');
+        search = search.replace('/[^A-Za-z0-9\s]+/g', '');
         return search;
     }
     //Perform the search.
@@ -183,6 +183,7 @@ jQuery(document).ready(function(){
                 kcw_movies.search = search;
                 ApiCall("search", "/"+FilterSearch(search), function(data) {
                     kcw_movies.pages = [];
+                    kcw_movies.search = data.search;
                     ShowListPage_callback(data, 1)
                 });
             } else {
@@ -250,6 +251,7 @@ jQuery(document).ready(function(){
                 });
             } else {
                 ApiCall("list", "/"+page, function(data) { 
+                    kcw_movies.search = "";
                     ShowListPage_callback(data, page)
                 });
             }

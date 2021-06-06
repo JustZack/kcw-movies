@@ -59,14 +59,32 @@ function kcw_movies_api_GetListPage($data) {
 }
 //Filter bad meaningless characters out of a search string
 function kcw_movies_api_FilterString($search) {
-    $search = preg_replace("/\%20/", '', $search);
-    $search = preg_replace("/[^A-Za-z0-9]+/", '', $search);
+    $search = preg_replace("/(%20|\+|\s)/", " ", $search);
+    $search = preg_replace("/[^A-Za-z0-9\s]/", "", $search);
     $search = strtolower($search);
     return $search;
 }
-//Check if two strings contain eachother
+
+function kcw_movies_api_StringsMatch($a, $b) {
+    if (strlen($a) == 0 && strlen($b) == 0) return true;
+    else if (strlen($a) == 0 xor strlen($b) == 0) return false;
+    return strpos($a, $b) > -1 || strpos($b, $a) > -1;
+}
+//Check if either the search or possible match are similar
 function kcw_movies_api_SearchMatches($search, $possible_match) {
-    return strpos($search, $possible_match) > -1 || strpos($possible_match, $search) > -1;
+    //Search contains video title OR Video title contains search 
+    if (kcw_movies_api_StringsMatch($search, $possible_match)) {
+        return true;
+    } else {
+        //Any part of the search OR possible match are similar
+        $search_parts = explode(" ", $search);
+        $match_parts = explode(" ", $possible_match);
+        foreach ($search_parts as $spart)
+            foreach ($match_parts as $mpart)
+                if (kcw_movies_api_StringsMatch($spart, $mpart))
+                    return true;
+        return false;
+    }
 }
 //Return any galleries matching the given search string
 function kcw_movies_Search($string) {
@@ -77,7 +95,7 @@ function kcw_movies_Search($string) {
         foreach ($list["data"] as $item)
             if (kcw_movies_api_SearchMatches($filtered, kcw_movies_api_FilterString($item["name"])))
                 $search_list[] = $item;
-        $list = $search_list;
+        $list["data"] = $search_list;
     }
     return $list;
 }
@@ -90,9 +108,9 @@ function kcw_movies_api_GetSearch($data) {
 function kcw_movies_api_GetSearchPage($data) {
     $vpage = (int)$data["vpage"];
     $list = kcw_movies_Search($data["vsearch"]);
-    $list_page = kcw_movies_api_Page($list, $vpage, 40, "items");
+    $list_page = kcw_movies_api_Page($list["data"], $vpage, 40, "items");
     $list_page["links"] = $list["links"];
-    $list_page["search"] = ($data["vsearch"]);
+    $list_page["search"] = kcw_movies_api_FilterString($data["vsearch"]);
     return kcw_movies_api_Success($list_page);
 }
 //Register API routes
