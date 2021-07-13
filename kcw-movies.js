@@ -309,7 +309,7 @@ jQuery(document).ready(function(){
         jQuery("html, body").animate({scrollTop: offset}, 400);
         if (videoid == currentvideo) return;
         var videosrc = jQuery(this).data("src");
-        DoPlayButton(-9999, -9999, null, false); 
+        DoPlayButton(-9999, -9999, null, false);
         DoVideoDisplay(videoid, videosrc);
         hideEmbedCode();
     }); 
@@ -325,6 +325,7 @@ jQuery(document).ready(function(){
                 //If it matches the id and source, display it
                 if (kcw_movies.pages[i][j].id == videoid && kcw_movies.pages[i][j].src == videosrc) {
                     var video = kcw_movies.pages[i][j];
+                    if (videosrc == "uploads") videosrc = "vimeo";
                     var embedlink = kcw_movies.links[videosrc].embed + video.id;
 
                     DisplayVideo(embedlink, video.name);
